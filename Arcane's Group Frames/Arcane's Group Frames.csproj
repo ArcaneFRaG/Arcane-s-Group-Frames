@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{888989AC-58B1-4896-8CD6-A435C8C0E4E9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Arcane_s_Group_Frames</RootNamespace>
+    <AssemblyName>Arcane%27s Group Frames</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Lunaris">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Lunaris.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Plugin.cs" />
+    <Compile Include="Configuration\RaidFramesSettings.cs" />
+    <Compile Include="Native\NativeRaidControlProxy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Raid\RaidGroupCommands.cs" />
+    <Compile Include="Styling\RaidClassColors.cs" />
+    <Compile Include="UI\ControlPanel\RaidControlPanel.cs" />
+    <Compile Include="UI\ControlPanel\RaidControlPanelDragHandler.cs" />
+    <Compile Include="UI\Native\RaidManagerToggleButton.cs" />
+    <Compile Include="UI\Native\RaidManagerToggleDragHandler.cs" />
+    <Compile Include="UI\Native\RaidManagerVisibility.cs" />
+    <Compile Include="UI\Options\RaidFramesOptionsUI.cs" />
+    <Compile Include="UI\RaidFrames\RaidFramesDragHandler.cs" />
+    <Compile Include="UI\RaidFrames\RaidFramesUI.cs" />
+    <Compile Include="UI\RaidFrames\RaidMemberFrame.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

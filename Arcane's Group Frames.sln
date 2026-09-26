@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcane's Group Frames", "Arcane's Group Frames\Arcane's Group Frames.csproj", "{888989AC-58B1-4896-8CD6-A435C8C0E4E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{888989AC-58B1-4896-8CD6-A435C8C0E4E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{888989AC-58B1-4896-8CD6-A435C8C0E4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{888989AC-58B1-4896-8CD6-A435C8C0E4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{888989AC-58B1-4896-8CD6-A435C8C0E4E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7488E570-A7BA-4160-A1D5-8DC03A5A8786}
+	EndGlobalSection
+EndGlobal

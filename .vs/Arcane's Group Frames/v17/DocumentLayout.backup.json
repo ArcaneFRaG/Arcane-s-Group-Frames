@@ -1,0 +1,258 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidmemberframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidmemberframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidframesui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidframesui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidcontrolpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidcontrolpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidframesoptionsui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidframesoptionsui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidframessettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidframessettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidframesdraghandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidframesdraghandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidgroupcommands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidgroupcommands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\nativeraidcontrolproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\nativeraidcontrolproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidcontrolpaneldraghandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidcontrolpaneldraghandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidmanagertogglebutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidmanagertogglebutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidmanagertoggledraghandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidmanagertoggledraghandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidmanagervisibility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidmanagervisibility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|c:\\users\\arcane\\source\\repos\\arcane\u0027s group frames\\arcane\u0027s group frames\\raidframeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{888989AC-58B1-4896-8CD6-A435C8C0E4E9}|Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames.csproj|solutionrelative:arcane\u0027s group frames\\raidframeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RaidFramesOptionsUI.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesOptionsUI.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidFramesOptionsUI.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesOptionsUI.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidFramesOptionsUI.cs",
+              "ViewState": "AgIAANsCAAAAAAAAAAAiwAIDAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T14:47:56.012Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RaidFramesSettings.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesSettings.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidFramesSettings.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesSettings.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidFramesSettings.cs",
+              "ViewState": "AgIAAE0BAAAAAAAAAAAiwHQBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T14:47:25.272Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RaidFramesUI.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesUI.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidFramesUI.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesUI.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidFramesUI.cs",
+              "ViewState": "AgIAAH0CAAAAAAAAAAAmwJACAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T14:26:39.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RaidMemberFrame.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidMemberFrame.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidMemberFrame.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidMemberFrame.cs*",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidMemberFrame.cs*",
+              "ViewState": "AgIAANACAAAAAAAAAAASwOkCAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T14:26:29.945Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RaidFramesDragHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesDragHandler.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidFramesDragHandler.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFramesDragHandler.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidFramesDragHandler.cs",
+              "ViewState": "AgIAAIYAAAAAAAAAAAAiwK0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T14:25:49.616Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "NativeRaidControlProxy.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\NativeRaidControlProxy.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\NativeRaidControlProxy.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\NativeRaidControlProxy.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\NativeRaidControlProxy.cs",
+              "ViewState": "AgIAACsBAAAAAAAAAAAiwFIBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T14:05:21.766Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "RaidGroupCommands.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidGroupCommands.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidGroupCommands.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidGroupCommands.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidGroupCommands.cs",
+              "ViewState": "AgIAANECAAAAAAAAAAAiwPgCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:53:12.714Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RaidControlPanel.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidControlPanel.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidControlPanel.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidControlPanel.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidControlPanel.cs",
+              "ViewState": "AgIAAGIHAAAAAAAAAAAiwHsHAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:43:59.712Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Plugin.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\Plugin.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\Plugin.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\Plugin.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\Plugin.cs",
+              "ViewState": "AgIAAKUAAAAAAAAAAAAiwMwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:01:29.684Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RaidControlPanelDragHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidControlPanelDragHandler.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidControlPanelDragHandler.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidControlPanelDragHandler.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidControlPanelDragHandler.cs",
+              "ViewState": "AgIAAJwAAAAAAAAAAAAiwLQAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:43:51.123Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "RaidManagerToggleDragHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidManagerToggleDragHandler.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidManagerToggleDragHandler.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidManagerToggleDragHandler.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidManagerToggleDragHandler.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAiwJIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:31:05.321Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "RaidManagerToggleButton.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidManagerToggleButton.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidManagerToggleButton.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidManagerToggleButton.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidManagerToggleButton.cs",
+              "ViewState": "AgIAAJUBAAAAAAAAAAAiwLwBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:26:00.654Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "RaidFrameConfig.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFrameConfig.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidFrameConfig.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidFrameConfig.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidFrameConfig.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:03:35.891Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "RaidManagerVisibility.cs",
+              "DocumentMoniker": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidManagerVisibility.cs",
+              "RelativeDocumentMoniker": "Arcane\u0027s Group Frames\\RaidManagerVisibility.cs",
+              "ToolTip": "C:\\Users\\Arcane\\source\\repos\\Arcane\u0027s Group Frames\\Arcane\u0027s Group Frames\\RaidManagerVisibility.cs",
+              "RelativeToolTip": "Arcane\u0027s Group Frames\\RaidManagerVisibility.cs",
+              "ViewState": "AgIAADkBAAAAAAAAAAAiwGABAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-26T13:03:30.352Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
