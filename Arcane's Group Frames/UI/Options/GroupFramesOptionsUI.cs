@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 namespace ArcanesGroupFrames
 {
-    internal static class RaidFramesOptionsUI
+    internal static class GroupFramesOptionsUI
     {
         private const float PanelWidth = 520f;
-        private const float PanelHeight = 840f;
+        private const float PanelHeight = 800f;
         private const float Margin = 12f;
 
         private static GameObject _canvasObject;
@@ -48,14 +48,12 @@ namespace ArcanesGroupFrames
         private static Text _memberSpacingLabel;
         private static Text _targetHighlightThicknessLabel;
         private static Text _aggroHighlightThicknessLabel;
-        private static Text _groupSpacingLabel;
 
         private static Slider _frameWidthSlider;
         private static Slider _frameHeightSlider;
         private static Slider _memberSpacingSlider;
         private static Slider _targetHighlightThicknessSlider;
         private static Slider _aggroHighlightThicknessSlider;
-        private static Slider _groupSpacingSlider;
 
         private static readonly Dictionary<ClickCastBindingSlot, Text>
             BindingTexts = new Dictionary<ClickCastBindingSlot, Text>();
@@ -94,7 +92,7 @@ namespace ArcanesGroupFrames
 
         private static void CreateCanvas()
         {
-            _canvasObject = new GameObject("ArcanesGroupFrames_OptionsCanvas");
+            _canvasObject = new GameObject("ArcanesGroupFrames_GroupOptionsCanvas");
             UnityEngine.Object.DontDestroyOnLoad(_canvasObject);
 
             Canvas canvas = _canvasObject.AddComponent<Canvas>();
@@ -111,7 +109,7 @@ namespace ArcanesGroupFrames
 
         private static void CreatePanel()
         {
-            _panelObject = new GameObject("RaidFramesOptionsPanel");
+            _panelObject = new GameObject("GroupFramesOptionsPanel");
             _panelObject.transform.SetParent(_canvasObject.transform, false);
 
             _panelRect = _panelObject.AddComponent<RectTransform>();
@@ -149,7 +147,7 @@ namespace ArcanesGroupFrames
             titleText.fontStyle = FontStyle.Bold;
             titleText.alignment = TextAnchor.MiddleLeft;
             titleText.color = Color.white;
-            titleText.text = "Arcane's Group Frames";
+            titleText.text = "Arcane's Group Frames - Group";
             titleText.raycastTarget = false;
 
             CreateButton(
@@ -209,23 +207,20 @@ namespace ArcanesGroupFrames
 
             CreateSectionLabel(_framesTab.transform, "Layout", ref y);
             CreateSliderRow(_framesTab.transform, ref y, 90f, 240f,
-                value => { RaidFramesSettings.SetFrameWidth(value); RaidFramesUI.SettingsChanged(); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetFrameWidth(value); PartyFramesUI.SettingsChanged(); RefreshAllControls(); },
                 out _frameWidthSlider, out _frameWidthLabel);
             CreateSliderRow(_framesTab.transform, ref y, 24f, 70f,
-                value => { RaidFramesSettings.SetFrameHeight(value); RaidFramesUI.SettingsChanged(); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetFrameHeight(value); PartyFramesUI.SettingsChanged(); RefreshAllControls(); },
                 out _frameHeightSlider, out _frameHeightLabel);
             CreateSliderRow(_framesTab.transform, ref y, 0f, 10f,
-                value => { RaidFramesSettings.SetMemberSpacing(value); RaidFramesUI.SettingsChanged(); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetMemberSpacing(value); PartyFramesUI.SettingsChanged(); RefreshAllControls(); },
                 out _memberSpacingSlider, out _memberSpacingLabel);
             CreateSliderRow(_framesTab.transform, ref y, 1f, 6f,
-                value => { RaidFramesSettings.SetTargetHighlightThickness(value); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetTargetHighlightThickness(value); RefreshAllControls(); },
                 out _targetHighlightThicknessSlider, out _targetHighlightThicknessLabel);
             CreateSliderRow(_framesTab.transform, ref y, 1f, 6f,
-                value => { RaidFramesSettings.SetAggroHighlightThickness(value); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetAggroHighlightThickness(value); RefreshAllControls(); },
                 out _aggroHighlightThicknessSlider, out _aggroHighlightThicknessLabel);
-            CreateSliderRow(_framesTab.transform, ref y, 0f, 25f,
-                value => { RaidFramesSettings.SetGroupSpacing(value); RaidFramesUI.SettingsChanged(); RefreshAllControls(); },
-                out _groupSpacingSlider, out _groupSpacingLabel);
 
             CreateButton(
                 _framesTab.transform,
@@ -235,8 +230,8 @@ namespace ArcanesGroupFrames
                 new Vector2(0f, 1f),
                 () =>
                 {
-                    RaidFramesSettings.ResetDefaults();
-                    RaidFramesUI.SettingsChanged();
+                    PartyFramesSettings.ResetDefaults();
+                    PartyFramesUI.SettingsChanged();
                     RefreshAllControls();
                 });
         }
@@ -259,8 +254,8 @@ namespace ArcanesGroupFrames
                 new Vector2(0f, 1f),
                 () =>
                 {
-                    RaidFramesSettings.SetBarTexture(
-                        UnitFrameAppearance.NextTexture(RaidFramesSettings.BarTexture));
+                    PartyFramesSettings.SetBarTexture(
+                        UnitFrameAppearance.NextTexture(PartyFramesSettings.BarTexture));
                     RefreshAllControls();
                 });
             _barTextureText = textureButton.GetComponentInChildren<Text>();
@@ -274,7 +269,7 @@ namespace ArcanesGroupFrames
                 new Vector2(0f, 1f),
                 () =>
                 {
-                    RaidFramesSettings.SetUseClassColors(!RaidFramesSettings.UseClassColors);
+                    PartyFramesSettings.SetUseClassColors(!PartyFramesSettings.UseClassColors);
                     RefreshAllControls();
                 });
             _healthColorModeText = colorModeButton.GetComponentInChildren<Text>();
@@ -286,7 +281,7 @@ namespace ArcanesGroupFrames
                 ref y,
                 value =>
                 {
-                    RaidFramesSettings.SetStaticHealthColorHex(value);
+                    PartyFramesSettings.SetStaticHealthColorHex(value);
                     RefreshAllControls();
                 });
 
@@ -296,7 +291,7 @@ namespace ArcanesGroupFrames
                 ref y,
                 value =>
                 {
-                    RaidFramesSettings.SetMissingHealthColorHex(value);
+                    PartyFramesSettings.SetMissingHealthColorHex(value);
                     RefreshAllControls();
                 });
 
@@ -310,23 +305,23 @@ namespace ArcanesGroupFrames
                 new Vector2(0f, 1f),
                 () =>
                 {
-                    RaidFramesSettings.SetFontName(
-                        UnitFrameAppearance.NextFont(RaidFramesSettings.FontName));
+                    PartyFramesSettings.SetFontName(
+                        UnitFrameAppearance.NextFont(PartyFramesSettings.FontName));
                     RefreshAllControls();
                 });
             _fontText = fontButton.GetComponentInChildren<Text>();
             y -= 44f;
 
             CreateSliderRow(_appearanceTab.transform, ref y, 8f, 24f,
-                value => { RaidFramesSettings.SetNameFontSize(value); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetNameFontSize(value); RefreshAllControls(); },
                 out _nameFontSizeSlider, out _nameFontSizeLabel);
 
             CreateSliderRow(_appearanceTab.transform, ref y, 8f, 24f,
-                value => { RaidFramesSettings.SetHpPercentFontSize(value); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetHpPercentFontSize(value); RefreshAllControls(); },
                 out _hpPercentFontSizeSlider, out _hpPercentFontSizeLabel);
 
             CreateSliderRow(_appearanceTab.transform, ref y, 8f, 24f,
-                value => { RaidFramesSettings.SetRawHpFontSize(value); RefreshAllControls(); },
+                value => { PartyFramesSettings.SetRawHpFontSize(value); RefreshAllControls(); },
                 out _rawHpFontSizeSlider, out _rawHpFontSizeLabel);
 
             CreateInfoText(
@@ -372,7 +367,7 @@ namespace ArcanesGroupFrames
                 new Vector2(0f, 1f),
                 () =>
                 {
-                    RaidFramesSettings.ResetClickBindings();
+                    PartyFramesSettings.ResetClickBindings();
                     RefreshBindingTexts();
                 });
 
@@ -528,7 +523,7 @@ namespace ArcanesGroupFrames
             button.targetGraphic = image;
             button.onClick.AddListener(() =>
             {
-                ClickCastingManager.SetBinding(slot, binding);
+                ClickCastingManager.SetBinding(slot, binding, true);
                 RefreshBindingTexts();
                 _pickerOverlay.SetActive(false);
             });
@@ -728,55 +723,53 @@ namespace ArcanesGroupFrames
             slider.fillRect = null;
         }
 
-        private static void ToggleLock() { RaidFramesUI.ToggleLocked(); RefreshAllControls(); }
-        private static void ToggleHpPercent() { RaidFramesSettings.SetShowHpPercent(!RaidFramesSettings.ShowHpPercent); RefreshAllControls(); }
-        private static void ToggleRawHp() { RaidFramesSettings.SetShowRawHealth(!RaidFramesSettings.ShowRawHealth); RefreshAllControls(); }
-        private static void ToggleClassColors() { RaidFramesSettings.SetUseClassColors(!RaidFramesSettings.UseClassColors); RefreshAllControls(); }
-        private static void ToggleMouseoverCasting() { RaidFramesSettings.SetEnableMouseoverCasting(!RaidFramesSettings.EnableMouseoverCasting); RefreshAllControls(); }
-        private static void ToggleManaBars() { RaidFramesSettings.SetShowManaBars(!RaidFramesSettings.ShowManaBars); RaidFramesUI.SettingsChanged(); RefreshAllControls(); }
-        private static void ToggleTargetHighlight() { RaidFramesSettings.SetShowTargetHighlight(!RaidFramesSettings.ShowTargetHighlight); RefreshAllControls(); }
-        private static void ToggleAggroHighlight() { RaidFramesSettings.SetShowAggroHighlight(!RaidFramesSettings.ShowAggroHighlight); RefreshAllControls(); }
-        private static void ToggleStatusIcons() { RaidFramesSettings.SetShowStatusIcons(!RaidFramesSettings.ShowStatusIcons); RefreshAllControls(); }
+        private static void ToggleLock() { PartyFramesUI.ToggleLocked(); RefreshAllControls(); }
+        private static void ToggleHpPercent() { PartyFramesSettings.SetShowHpPercent(!PartyFramesSettings.ShowHpPercent); RefreshAllControls(); }
+        private static void ToggleRawHp() { PartyFramesSettings.SetShowRawHealth(!PartyFramesSettings.ShowRawHealth); RefreshAllControls(); }
+        private static void ToggleClassColors() { PartyFramesSettings.SetUseClassColors(!PartyFramesSettings.UseClassColors); RefreshAllControls(); }
+        private static void ToggleMouseoverCasting() { PartyFramesSettings.SetEnableMouseoverCasting(!PartyFramesSettings.EnableMouseoverCasting); RefreshAllControls(); }
+        private static void ToggleManaBars() { PartyFramesSettings.SetShowManaBars(!PartyFramesSettings.ShowManaBars); PartyFramesUI.SettingsChanged(); RefreshAllControls(); }
+        private static void ToggleTargetHighlight() { PartyFramesSettings.SetShowTargetHighlight(!PartyFramesSettings.ShowTargetHighlight); RefreshAllControls(); }
+        private static void ToggleAggroHighlight() { PartyFramesSettings.SetShowAggroHighlight(!PartyFramesSettings.ShowAggroHighlight); RefreshAllControls(); }
+        private static void ToggleStatusIcons() { PartyFramesSettings.SetShowStatusIcons(!PartyFramesSettings.ShowStatusIcons); RefreshAllControls(); }
 
         private static void RefreshAllControls()
         {
-            if (_lockText != null) _lockText.text = RaidFramesSettings.Locked ? "Frames: LOCKED" : "Frames: UNLOCKED";
-            if (_hpPercentText != null) _hpPercentText.text = "HP %: " + (RaidFramesSettings.ShowHpPercent ? "ON" : "OFF");
-            if (_rawHealthText != null) _rawHealthText.text = "Raw HP: " + (RaidFramesSettings.ShowRawHealth ? "ON" : "OFF");
-            if (_classColorText != null) _classColorText.text = "Class Colors: " + (RaidFramesSettings.UseClassColors ? "ON" : "OFF");
-            if (_mouseoverCastingText != null) _mouseoverCastingText.text = "Mouseover Casting: " + (RaidFramesSettings.EnableMouseoverCasting ? "ON" : "OFF");
-            if (_manaBarsText != null) _manaBarsText.text = "Mana Bars: " + (RaidFramesSettings.ShowManaBars ? "ON" : "OFF");
-            if (_targetHighlightText != null) _targetHighlightText.text = "Target Highlight: " + (RaidFramesSettings.ShowTargetHighlight ? "ON" : "OFF");
-            if (_aggroHighlightText != null) _aggroHighlightText.text = "Aggro Highlight: " + (RaidFramesSettings.ShowAggroHighlight ? "ON" : "OFF");
-            if (_statusIconsText != null) _statusIconsText.text = "Status Icons: " + (RaidFramesSettings.ShowStatusIcons ? "ON" : "OFF");
+            if (_lockText != null) _lockText.text = PartyFramesSettings.Locked ? "Frames: LOCKED" : "Frames: UNLOCKED";
+            if (_hpPercentText != null) _hpPercentText.text = "HP %: " + (PartyFramesSettings.ShowHpPercent ? "ON" : "OFF");
+            if (_rawHealthText != null) _rawHealthText.text = "Raw HP: " + (PartyFramesSettings.ShowRawHealth ? "ON" : "OFF");
+            if (_classColorText != null) _classColorText.text = "Class Colors: " + (PartyFramesSettings.UseClassColors ? "ON" : "OFF");
+            if (_mouseoverCastingText != null) _mouseoverCastingText.text = "Mouseover Casting: " + (PartyFramesSettings.EnableMouseoverCasting ? "ON" : "OFF");
+            if (_manaBarsText != null) _manaBarsText.text = "Mana Bars: " + (PartyFramesSettings.ShowManaBars ? "ON" : "OFF");
+            if (_targetHighlightText != null) _targetHighlightText.text = "Target Highlight: " + (PartyFramesSettings.ShowTargetHighlight ? "ON" : "OFF");
+            if (_aggroHighlightText != null) _aggroHighlightText.text = "Aggro Highlight: " + (PartyFramesSettings.ShowAggroHighlight ? "ON" : "OFF");
+            if (_statusIconsText != null) _statusIconsText.text = "Status Icons: " + (PartyFramesSettings.ShowStatusIcons ? "ON" : "OFF");
 
-            if (_barTextureText != null) _barTextureText.text = "Bar Texture: " + RaidFramesSettings.BarTexture;
-            if (_healthColorModeText != null) _healthColorModeText.text = "Health Color: " + (RaidFramesSettings.UseClassColors ? "CLASS" : "STATIC");
-            if (_fontText != null) _fontText.text = "Font: " + RaidFramesSettings.FontName;
-            if (_staticHealthColorInput != null) _staticHealthColorInput.text = RaidFramesSettings.StaticHealthColorHex;
-            if (_missingHealthColorInput != null) _missingHealthColorInput.text = RaidFramesSettings.MissingHealthColorHex;
+            if (_barTextureText != null) _barTextureText.text = "Bar Texture: " + PartyFramesSettings.BarTexture;
+            if (_healthColorModeText != null) _healthColorModeText.text = "Health Color: " + (PartyFramesSettings.UseClassColors ? "CLASS" : "STATIC");
+            if (_fontText != null) _fontText.text = "Font: " + PartyFramesSettings.FontName;
+            if (_staticHealthColorInput != null) _staticHealthColorInput.text = PartyFramesSettings.StaticHealthColorHex;
+            if (_missingHealthColorInput != null) _missingHealthColorInput.text = PartyFramesSettings.MissingHealthColorHex;
 
-            SetSlider(_nameFontSizeSlider, RaidFramesSettings.NameFontSize);
-            SetSlider(_hpPercentFontSizeSlider, RaidFramesSettings.HpPercentFontSize);
-            SetSlider(_rawHpFontSizeSlider, RaidFramesSettings.RawHpFontSize);
+            SetSlider(_nameFontSizeSlider, PartyFramesSettings.NameFontSize);
+            SetSlider(_hpPercentFontSizeSlider, PartyFramesSettings.HpPercentFontSize);
+            SetSlider(_rawHpFontSizeSlider, PartyFramesSettings.RawHpFontSize);
 
-            if (_nameFontSizeLabel != null) _nameFontSizeLabel.text = "Name Font Size: " + RaidFramesSettings.NameFontSize;
-            if (_hpPercentFontSizeLabel != null) _hpPercentFontSizeLabel.text = "HP % Font Size: " + RaidFramesSettings.HpPercentFontSize;
-            if (_rawHpFontSizeLabel != null) _rawHpFontSizeLabel.text = "Raw HP Font Size: " + RaidFramesSettings.RawHpFontSize;
+            if (_nameFontSizeLabel != null) _nameFontSizeLabel.text = "Name Font Size: " + PartyFramesSettings.NameFontSize;
+            if (_hpPercentFontSizeLabel != null) _hpPercentFontSizeLabel.text = "HP % Font Size: " + PartyFramesSettings.HpPercentFontSize;
+            if (_rawHpFontSizeLabel != null) _rawHpFontSizeLabel.text = "Raw HP Font Size: " + PartyFramesSettings.RawHpFontSize;
 
-            SetSlider(_frameWidthSlider, RaidFramesSettings.FrameWidth);
-            SetSlider(_frameHeightSlider, RaidFramesSettings.FrameHeight);
-            SetSlider(_memberSpacingSlider, RaidFramesSettings.MemberSpacing);
-            SetSlider(_targetHighlightThicknessSlider, RaidFramesSettings.TargetHighlightThickness);
-            SetSlider(_aggroHighlightThicknessSlider, RaidFramesSettings.AggroHighlightThickness);
-            SetSlider(_groupSpacingSlider, RaidFramesSettings.GroupSpacing);
+            SetSlider(_frameWidthSlider, PartyFramesSettings.FrameWidth);
+            SetSlider(_frameHeightSlider, PartyFramesSettings.FrameHeight);
+            SetSlider(_memberSpacingSlider, PartyFramesSettings.MemberSpacing);
+            SetSlider(_targetHighlightThicknessSlider, PartyFramesSettings.TargetHighlightThickness);
+            SetSlider(_aggroHighlightThicknessSlider, PartyFramesSettings.AggroHighlightThickness);
 
-            if (_frameWidthLabel != null) _frameWidthLabel.text = "Frame Width: " + RaidFramesSettings.FrameWidth.ToString("F0");
-            if (_frameHeightLabel != null) _frameHeightLabel.text = "Frame Height: " + RaidFramesSettings.FrameHeight.ToString("F0");
-            if (_memberSpacingLabel != null) _memberSpacingLabel.text = "Member Spacing: " + RaidFramesSettings.MemberSpacing.ToString("F0");
-            if (_targetHighlightThicknessLabel != null) _targetHighlightThicknessLabel.text = "Target Border: " + RaidFramesSettings.TargetHighlightThickness.ToString("F0") + " px";
-            if (_aggroHighlightThicknessLabel != null) _aggroHighlightThicknessLabel.text = "Aggro Border: " + RaidFramesSettings.AggroHighlightThickness.ToString("F0") + " px";
-            if (_groupSpacingLabel != null) _groupSpacingLabel.text = "Group Spacing: " + RaidFramesSettings.GroupSpacing.ToString("F0");
+            if (_frameWidthLabel != null) _frameWidthLabel.text = "Frame Width: " + PartyFramesSettings.FrameWidth.ToString("F0");
+            if (_frameHeightLabel != null) _frameHeightLabel.text = "Frame Height: " + PartyFramesSettings.FrameHeight.ToString("F0");
+            if (_memberSpacingLabel != null) _memberSpacingLabel.text = "Member Spacing: " + PartyFramesSettings.MemberSpacing.ToString("F0");
+            if (_targetHighlightThicknessLabel != null) _targetHighlightThicknessLabel.text = "Target Border: " + PartyFramesSettings.TargetHighlightThickness.ToString("F0") + " px";
+            if (_aggroHighlightThicknessLabel != null) _aggroHighlightThicknessLabel.text = "Aggro Border: " + PartyFramesSettings.AggroHighlightThickness.ToString("F0") + " px";
 
             RefreshBindingTexts();
         }
@@ -788,7 +781,7 @@ namespace ArcanesGroupFrames
                 if (pair.Value != null)
                 {
                     pair.Value.text = ClickCastingManager.GetBindingDisplayName(
-                        ClickCastingManager.GetBinding(pair.Key));
+                        ClickCastingManager.GetBinding(pair.Key, true));
                 }
             }
         }
@@ -914,13 +907,11 @@ namespace ArcanesGroupFrames
             _memberSpacingLabel = null;
             _targetHighlightThicknessLabel = null;
             _aggroHighlightThicknessLabel = null;
-            _groupSpacingLabel = null;
             _frameWidthSlider = null;
             _frameHeightSlider = null;
             _memberSpacingSlider = null;
             _targetHighlightThicknessSlider = null;
             _aggroHighlightThicknessSlider = null;
-            _groupSpacingSlider = null;
             _catalogueDumped = false;
         }
     }

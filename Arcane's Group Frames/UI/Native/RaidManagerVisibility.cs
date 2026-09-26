@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,12 +12,154 @@ namespace ArcanesGroupFrames
 
         private static CanvasGroup _memberListCanvasGroup;
 
+        private static bool _lastRaidActive;
+
+        private static bool _initialized;
+
+        private static float _resolveRetryTimer;
+
 
         internal static bool IsVisible
         {
             get;
             private set;
         } = true;
+
+
+        // ============================================================
+        // AUTOMATIC RAID STATE
+        // ============================================================
+
+        internal static void Initialize()
+        {
+            _initialized =
+                true;
+
+            _lastRaidActive =
+                GameData.RaidActive;
+
+            _resolveRetryTimer =
+                0f;
+
+
+            if (_lastRaidActive)
+            {
+                RefreshForActiveRaid();
+            }
+            else
+            {
+                IsVisible =
+                    true;
+            }
+        }
+
+
+        internal static void UpdateAutomatic()
+        {
+            bool raidActive =
+                GameData.RaidActive;
+
+
+            if (!_initialized)
+            {
+                Initialize();
+                return;
+            }
+
+
+            if (raidActive != _lastRaidActive)
+            {
+                _lastRaidActive =
+                    raidActive;
+
+                _resolveRetryTimer =
+                    0f;
+
+
+                if (raidActive)
+                {
+                    RefreshForActiveRaid();
+                }
+                else
+                {
+                    RestoreAndRelease();
+                }
+
+
+                return;
+            }
+
+
+            if (!raidActive)
+            {
+                return;
+            }
+
+
+            // Scene loads can recreate the native RaidManager without
+            // changing RaidActive. Retry at a low frequency until the
+            // native member-list hierarchy is available again.
+            if (_memberListCanvasGroup == null)
+            {
+                _resolveRetryTimer -=
+                    Time.unscaledDeltaTime;
+
+
+                if (_resolveRetryTimer <= 0f)
+                {
+                    _resolveRetryTimer =
+                        0.75f;
+
+                    RefreshForActiveRaid();
+                }
+            }
+        }
+
+
+        private static void RefreshForActiveRaid()
+        {
+            _raidManager =
+                null;
+
+            _memberListRoot =
+                null;
+
+            _memberListCanvasGroup =
+                null;
+
+
+            SetVisible(
+                false);
+        }
+
+
+        private static void RestoreAndRelease()
+        {
+            if (_memberListCanvasGroup != null)
+            {
+                _memberListCanvasGroup.alpha =
+                    1f;
+
+                _memberListCanvasGroup.interactable =
+                    true;
+
+                _memberListCanvasGroup.blocksRaycasts =
+                    true;
+            }
+
+
+            IsVisible =
+                true;
+
+            _raidManager =
+                null;
+
+            _memberListRoot =
+                null;
+
+            _memberListCanvasGroup =
+                null;
+        }
 
 
         // ============================================================
@@ -52,19 +194,7 @@ namespace ArcanesGroupFrames
                 visible;
 
 
-            Plugin.LogInfo(
-                "Native raid-member list visibility: " +
-                (visible
-                    ? "Visible"
-                    : "Hidden"));
-        }
-
-
-        internal static void Toggle()
-        {
-            SetVisible(
-                !IsVisible);
-        }
+}
 
 
         internal static void Refresh()
@@ -145,13 +275,7 @@ namespace ArcanesGroupFrames
                 commonParent.gameObject;
 
 
-            Plugin.LogInfo(
-                "Raid-member list root resolved as: " +
-                GetHierarchyPath(
-                    commonParent));
-
-
-            _memberListCanvasGroup =
+_memberListCanvasGroup =
                 _memberListRoot
                     .GetComponent<CanvasGroup>();
 
@@ -163,9 +287,7 @@ namespace ArcanesGroupFrames
                         .AddComponent<CanvasGroup>();
 
 
-                Plugin.LogInfo(
-                    "Added CanvasGroup to raid-member list root.");
-            }
+}
 
 
             return true;
@@ -348,6 +470,15 @@ namespace ArcanesGroupFrames
 
             IsVisible =
                 true;
+
+            _lastRaidActive =
+                false;
+
+            _initialized =
+                false;
+
+            _resolveRetryTimer =
+                0f;
         }
     }
 }

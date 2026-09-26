@@ -15,3 +15,9 @@ Lunaris UI replacement for Erenshor group and raid frames.
 - `Docs/` - project scope and roadmap.
 
 See `Docs/PROJECT_SCOPE.md` for current and planned functionality.
+
+
+## Unit-frame interactions
+- Left click a custom unit frame to target that unit.
+- Right click a SimPlayer frame to open native inspection.
+- Mouseover casting redirects Heal and Beneficial player spells to the hovered custom unit frame without changing the selected target.

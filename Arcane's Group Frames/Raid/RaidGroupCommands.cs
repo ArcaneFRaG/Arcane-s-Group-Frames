@@ -67,10 +67,7 @@ namespace ArcanesGroupFrames
                     target);
 
 
-            Plugin.LogInfo(
-                $"Group {groupNumber}: " +
-                $"assigned target {GetCharacterName(target)}.");
-        }
+}
 
 
         // ============================================================
@@ -109,10 +106,7 @@ namespace ArcanesGroupFrames
                     target);
 
 
-            Plugin.LogInfo(
-                $"Group {groupNumber}: " +
-                $"attack {GetCharacterName(target)}.");
-        }
+}
 
 
         // ============================================================
@@ -210,11 +204,7 @@ namespace ArcanesGroupFrames
             }
 
 
-            Plugin.LogInfo(
-                $"Group {groupNumber}: " +
-                $"{puller.AssignedAvatar.transform.name} " +
-                $"pulling {GetCharacterName(target)}.");
-        }
+}
 
 
         // ============================================================
@@ -272,9 +262,7 @@ namespace ArcanesGroupFrames
             }
 
 
-            Plugin.LogInfo(
-                $"Group {groupNumber}: follow.");
-        }
+}
 
 
         // ============================================================
@@ -345,9 +333,7 @@ namespace ArcanesGroupFrames
             }
 
 
-            Plugin.LogInfo(
-                $"Group {groupNumber}: hold here.");
-        }
+}
 
 
         // ============================================================
@@ -367,9 +353,7 @@ namespace ArcanesGroupFrames
                 .OrderAttack();
 
 
-            Plugin.LogInfo(
-                "Raid: All Attack.");
-        }
+}
 
 
         internal static void AllPull()
@@ -385,9 +369,7 @@ namespace ArcanesGroupFrames
                 .OrderRaiderToPullTarget();
 
 
-            Plugin.LogInfo(
-                "Raid: All Pull.");
-        }
+}
 
 
         // ============================================================

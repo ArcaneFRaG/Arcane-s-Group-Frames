@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -136,9 +139,7 @@ namespace ArcanesGroupFrames
             }
 
 
-            Plugin.LogInfo(
-                "Custom Raid Frames initialized.");
-        }
+}
 
 
         // ============================================================
@@ -152,7 +153,7 @@ namespace ArcanesGroupFrames
                     "ArcanesGroupFrames_RaidFramesCanvas");
 
 
-            Object.DontDestroyOnLoad(
+            UnityEngine.Object.DontDestroyOnLoad(
                 _canvasObject);
 
 
@@ -536,6 +537,578 @@ namespace ArcanesGroupFrames
 
 
         // ============================================================
+        // RAID MEMBER DRAG / DROP
+        // ============================================================
+
+        internal static GameObject GetDropGroupObject(
+            int group)
+        {
+            if (group < 1 ||
+                group > RaidGroupCount)
+            {
+                return null;
+            }
+
+
+            return GroupObjects[group];
+        }
+
+
+        internal static bool CanDropRaidMemberIntoGroup(
+            RaidMemberSlot slot,
+            int targetGroup)
+        {
+            if (!GameData.RaidActive ||
+                slot == null ||
+                targetGroup < 1 ||
+                targetGroup > RaidGroupCount)
+            {
+                return false;
+            }
+
+
+            // Staying in the same group is not an empty-space move. Occupied
+            // member frames are handled separately as slot swaps.
+            if (slot.GroupNumber == targetGroup)
+            {
+                return false;
+            }
+
+
+            return GetDisplayedMemberCount(
+                       targetGroup) <
+                   MaximumMembersPerGroup;
+        }
+
+
+        internal static int GetDropGroup(
+            Vector2 screenPosition)
+        {
+            if (!GameData.RaidActive)
+            {
+                return 0;
+            }
+
+
+            for (int group = 1;
+                 group <= RaidGroupCount;
+                 group++)
+            {
+                GameObject groupObject =
+                    GroupObjects[group];
+
+
+                if (groupObject == null)
+                {
+                    continue;
+                }
+
+
+                RectTransform rect =
+                    groupObject.GetComponent<RectTransform>();
+
+
+                if (rect != null &&
+                    RectTransformUtility.RectangleContainsScreenPoint(
+                        rect,
+                        screenPosition,
+                        null))
+                {
+                    return group;
+                }
+            }
+
+
+            return 0;
+        }
+
+
+        internal static bool TrySwapRaidMembers(
+            RaidMemberSlot first,
+            RaidMemberSlot second)
+        {
+            if (!GameData.RaidActive ||
+                GameData.RaidManager == null ||
+                first == null ||
+                second == null ||
+                first == second)
+            {
+                return false;
+            }
+
+
+            int firstGroup =
+                first.GroupNumber;
+
+            int secondGroup =
+                second.GroupNumber;
+
+
+            if (firstGroup < 1 ||
+                firstGroup > RaidGroupCount ||
+                secondGroup < 1 ||
+                secondGroup > RaidGroupCount)
+            {
+                return false;
+            }
+
+
+            if (!TrySynchronizeNativeGroupListsForSwap(
+                    first,
+                    second,
+                    firstGroup,
+                    secondGroup))
+            {
+                Plugin.LogWarning(
+                    "Could not synchronize native RaidManager group lists; " +
+                    "raid member swap cancelled.");
+
+                return false;
+            }
+
+
+            int firstSlotIndex =
+                first.SlotIndex;
+
+            int secondSlotIndex =
+                second.SlotIndex;
+
+
+            // Exchange both group ownership and raid slot index. This keeps
+            // the destination group at the same population and makes the two
+            // frames occupy each other's actual positions rather than
+            // appending the dragged member to the end of the group.
+            first.GroupNumber =
+                secondGroup;
+
+            second.GroupNumber =
+                firstGroup;
+
+
+            first.SlotIndex =
+                secondSlotIndex;
+
+            second.SlotIndex =
+                firstSlotIndex;
+
+
+            SynchronizeAvatarRaidIndex(
+                first);
+
+            SynchronizeAvatarRaidIndex(
+                second);
+
+
+            _lastRosterSignature =
+                "";
+
+
+            RebuildRoster();
+
+
+return true;
+        }
+
+
+        internal static bool TryMoveRaidMemberToGroup(
+            RaidMemberSlot slot,
+            int targetGroup)
+        {
+            if (!GameData.RaidActive ||
+                GameData.RaidManager == null ||
+                slot == null ||
+                targetGroup < 1 ||
+                targetGroup > RaidGroupCount)
+            {
+                return false;
+            }
+
+
+            if (slot.GroupNumber == targetGroup)
+            {
+                return false;
+            }
+
+
+            if (GetDisplayedMemberCount(targetGroup) >=
+                MaximumMembersPerGroup)
+            {
+                Plugin.LogWarning(
+                    "Raid Group " +
+                    targetGroup +
+                    " is full; drag/drop move cancelled.");
+
+                return false;
+            }
+
+
+            if (!TrySynchronizeNativeGroupLists(
+                    slot,
+                    targetGroup))
+            {
+                Plugin.LogWarning(
+                    "Could not synchronize native RaidManager group lists; " +
+                    "drag/drop move cancelled.");
+
+                return false;
+            }
+
+
+            int oldGroup =
+                slot.GroupNumber;
+
+
+            slot.GroupNumber =
+                targetGroup;
+
+
+            _lastRosterSignature =
+                "";
+
+
+            RebuildRoster();
+
+
+return true;
+        }
+
+
+        private static int GetDisplayedMemberCount(
+            int group)
+        {
+            int count =
+                group == 1 && GameData.PlayerStats != null
+                    ? 1
+                    : 0;
+
+
+            if (GameData.RaidManager == null ||
+                GameData.RaidManager.Raiders == null)
+            {
+                return count;
+            }
+
+
+            foreach (RaidMemberSlot slot
+                     in GameData.RaidManager.Raiders)
+            {
+                if (slot != null &&
+                    slot.GroupNumber == group &&
+                    (slot.AssignedSimTracking != null ||
+                     slot.AssignedAvatar != null))
+                {
+                    count++;
+                }
+            }
+
+
+            return count;
+        }
+
+
+        private static bool TrySynchronizeNativeGroupListsForSwap(
+            RaidMemberSlot first,
+            RaidMemberSlot second,
+            int firstGroup,
+            int secondGroup)
+        {
+            RaidManager manager =
+                GameData.RaidManager;
+
+
+            if (manager == null ||
+                first == null ||
+                second == null)
+            {
+                return false;
+            }
+
+
+            IList group1 =
+                ResolveNativeGroupList(
+                    manager,
+                    "Group1");
+
+            IList group2 =
+                ResolveNativeGroupList(
+                    manager,
+                    "Group2");
+
+            IList group3 =
+                ResolveNativeGroupList(
+                    manager,
+                    "Group3");
+
+
+            if (group1 == null ||
+                group2 == null ||
+                group3 == null)
+            {
+                return false;
+            }
+
+
+            IList firstDestination =
+                secondGroup == 1
+                    ? group1
+                    : (secondGroup == 2
+                        ? group2
+                        : group3);
+
+
+            IList secondDestination =
+                firstGroup == 1
+                    ? group1
+                    : (firstGroup == 2
+                        ? group2
+                        : group3);
+
+
+            RemoveSlotFromList(
+                group1,
+                first);
+
+            RemoveSlotFromList(
+                group2,
+                first);
+
+            RemoveSlotFromList(
+                group3,
+                first);
+
+
+            RemoveSlotFromList(
+                group1,
+                second);
+
+            RemoveSlotFromList(
+                group2,
+                second);
+
+            RemoveSlotFromList(
+                group3,
+                second);
+
+
+            if (!ContainsSlot(
+                    firstDestination,
+                    first))
+            {
+                firstDestination.Add(
+                    first);
+            }
+
+
+            if (!ContainsSlot(
+                    secondDestination,
+                    second))
+            {
+                secondDestination.Add(
+                    second);
+            }
+
+
+            return true;
+        }
+
+
+        private static void SynchronizeAvatarRaidIndex(
+            RaidMemberSlot slot)
+        {
+            if (slot == null ||
+                slot.AssignedAvatar == null)
+            {
+                return;
+            }
+
+
+            NPC npc =
+                slot.AssignedAvatar.GetThisNPC();
+
+
+            if (npc == null)
+            {
+                return;
+            }
+
+
+            npc.indexInRaid =
+                slot.SlotIndex;
+        }
+
+
+        private static bool TrySynchronizeNativeGroupLists(
+            RaidMemberSlot slot,
+            int targetGroup)
+        {
+            RaidManager manager =
+                GameData.RaidManager;
+
+
+            if (manager == null ||
+                slot == null)
+            {
+                return false;
+            }
+
+
+            IList group1 =
+                ResolveNativeGroupList(
+                    manager,
+                    "Group1");
+
+            IList group2 =
+                ResolveNativeGroupList(
+                    manager,
+                    "Group2");
+
+            IList group3 =
+                ResolveNativeGroupList(
+                    manager,
+                    "Group3");
+
+
+            if (group1 == null ||
+                group2 == null ||
+                group3 == null)
+            {
+                return false;
+            }
+
+
+            IList destination =
+                targetGroup == 1
+                    ? group1
+                    : (targetGroup == 2
+                        ? group2
+                        : group3);
+
+
+            RemoveSlotFromList(
+                group1,
+                slot);
+
+            RemoveSlotFromList(
+                group2,
+                slot);
+
+            RemoveSlotFromList(
+                group3,
+                slot);
+
+
+            if (!ContainsSlot(
+                    destination,
+                    slot))
+            {
+                destination.Add(
+                    slot);
+            }
+
+
+            return true;
+        }
+
+
+        private static IList ResolveNativeGroupList(
+            RaidManager manager,
+            string name)
+        {
+            Type type =
+                manager.GetType();
+
+
+            FieldInfo field =
+                type.GetField(
+                    name,
+                    BindingFlags.Instance |
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic);
+
+
+            if (field != null)
+            {
+                return field.GetValue(
+                    manager) as IList;
+            }
+
+
+            PropertyInfo property =
+                type.GetProperty(
+                    name,
+                    BindingFlags.Instance |
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic);
+
+
+            if (property != null &&
+                property.CanRead)
+            {
+                return property.GetValue(
+                    manager,
+                    null) as IList;
+            }
+
+
+            return null;
+        }
+
+
+        private static void RemoveSlotFromList(
+            IList list,
+            RaidMemberSlot slot)
+        {
+            if (list == null ||
+                slot == null)
+            {
+                return;
+            }
+
+
+            for (int i = list.Count - 1;
+                 i >= 0;
+                 i--)
+            {
+                if (object.ReferenceEquals(
+                        list[i],
+                        slot))
+                {
+                    list.RemoveAt(
+                        i);
+                }
+            }
+        }
+
+
+        private static bool ContainsSlot(
+            IList list,
+            RaidMemberSlot slot)
+        {
+            if (list == null ||
+                slot == null)
+            {
+                return false;
+            }
+
+
+            for (int i = 0;
+                 i < list.Count;
+                 i++)
+            {
+                if (object.ReferenceEquals(
+                        list[i],
+                        slot))
+                {
+                    return true;
+                }
+            }
+
+
+            return false;
+        }
+
+
+        // ============================================================
         // LOCK STATE
         // ============================================================
 
@@ -547,6 +1120,7 @@ namespace ArcanesGroupFrames
 
 
             ApplyLockState();
+
         }
 
 
@@ -636,7 +1210,7 @@ namespace ArcanesGroupFrames
             {
                 if (GroupObjects[group] != null)
                 {
-                    Object.Destroy(
+                    UnityEngine.Object.Destroy(
                         GroupObjects[group]);
                 }
 
@@ -987,11 +1561,7 @@ namespace ArcanesGroupFrames
                     _savedPosition);
 
 
-            Plugin.LogInfo(
-                $"Raid Frames position: " +
-                $"X={_savedPosition.x:F1}, " +
-                $"Y={_savedPosition.y:F1}");
-        }
+}
 
 
         // ============================================================
@@ -1078,7 +1648,7 @@ namespace ArcanesGroupFrames
 
             if (_canvasObject != null)
             {
-                Object.Destroy(
+                UnityEngine.Object.Destroy(
                     _canvasObject);
             }
 

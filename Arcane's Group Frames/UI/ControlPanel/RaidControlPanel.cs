@@ -185,9 +185,7 @@ namespace ArcanesGroupFrames
                 true);
 
 
-            Plugin.LogInfo(
-                "Raid Control Panel initialized.");
-        }
+}
 
 
         // ============================================================
@@ -1849,11 +1847,7 @@ namespace ArcanesGroupFrames
                     .anchoredPosition;
 
 
-            Plugin.LogInfo(
-                $"Raid Control Panel position: " +
-                $"X={_savedPosition.x:F1}, " +
-                $"Y={_savedPosition.y:F1}");
-        }
+}
 
 
         // ============================================================

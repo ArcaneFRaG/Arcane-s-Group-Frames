@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +14,13 @@ namespace ArcanesGroupFrames
 
         private readonly RaidMemberSlot _slot;
 
+        private readonly SimPlayerTracking _groupMember;
+
         private readonly bool _player;
+
+        private readonly bool _partyContext;
+
+        private readonly int _groupSlotIndex;
 
 
         // ============================================================
@@ -26,11 +35,45 @@ namespace ArcanesGroupFrames
 
         private readonly Image _healthFill;
 
+        private readonly Image _manaBackground;
+
+        private readonly Image _manaFill;
+
+        private readonly GameObject _targetHighlight;
+
+        private readonly Image _targetTop;
+
+        private readonly Image _targetBottom;
+
+        private readonly Image _targetLeft;
+
+        private readonly Image _targetRight;
+
+        private readonly GameObject _aggroHighlight;
+
+        private readonly Image _aggroTop;
+
+        private readonly Image _aggroBottom;
+
+        private readonly Image _aggroLeft;
+
+        private readonly Image _aggroRight;
+
         private readonly Text _nameText;
 
         private readonly Text _hpPercentText;
 
         private readonly Text _rawHealthText;
+
+        private readonly Button _kickButton;
+
+        private readonly StatusIndicator[] _debuffIndicators;
+
+        private readonly StatusIndicator[] _buffIndicators;
+
+        private static FieldInfo _spellSpriteField;
+
+        private static bool _spellSpriteFieldResolved;
 
 
         // ============================================================
@@ -45,8 +88,20 @@ namespace ArcanesGroupFrames
                 slot;
 
 
+            _groupMember =
+                null;
+
+
             _player =
                 false;
+
+
+            _partyContext =
+                false;
+
+
+            _groupSlotIndex =
+                -1;
 
 
             _root =
@@ -66,6 +121,14 @@ namespace ArcanesGroupFrames
                 CreateHealthFill();
 
 
+            _manaBackground =
+                CreateManaBackground();
+
+
+            _manaFill =
+                CreateManaFill();
+
+
             _nameText =
                 CreateNameText();
 
@@ -76,6 +139,41 @@ namespace ArcanesGroupFrames
 
             _rawHealthText =
                 CreateRawHealthText();
+
+
+            _targetHighlight =
+                CreateTargetHighlight(
+                    out _targetTop,
+                    out _targetBottom,
+                    out _targetLeft,
+                    out _targetRight);
+
+
+            _aggroHighlight =
+                CreateAggroHighlight(
+                    out _aggroTop,
+                    out _aggroBottom,
+                    out _aggroLeft,
+                    out _aggroRight);
+
+
+            _kickButton =
+                null;
+
+
+            _debuffIndicators =
+                CreateStatusIndicators(
+                    true);
+
+
+            _buffIndicators =
+                CreateStatusIndicators(
+                    false);
+
+
+            ConfigureInteraction();
+
+            ConfigureRaidDrag();
 
 
             Refresh();
@@ -87,14 +185,27 @@ namespace ArcanesGroupFrames
         // ============================================================
 
         internal RaidMemberFrame(
-            RectTransform parent)
+            RectTransform parent,
+            bool partyContext = false)
         {
             _slot =
                 null;
 
 
+            _groupMember =
+                null;
+
+
             _player =
                 true;
+
+
+            _partyContext =
+                partyContext;
+
+
+            _groupSlotIndex =
+                -1;
 
 
             _root =
@@ -114,6 +225,14 @@ namespace ArcanesGroupFrames
                 CreateHealthFill();
 
 
+            _manaBackground =
+                CreateManaBackground();
+
+
+            _manaFill =
+                CreateManaFill();
+
+
             _nameText =
                 CreateNameText();
 
@@ -126,7 +245,1146 @@ namespace ArcanesGroupFrames
                 CreateRawHealthText();
 
 
+            _targetHighlight =
+                CreateTargetHighlight(
+                    out _targetTop,
+                    out _targetBottom,
+                    out _targetLeft,
+                    out _targetRight);
+
+
+            _aggroHighlight =
+                CreateAggroHighlight(
+                    out _aggroTop,
+                    out _aggroBottom,
+                    out _aggroLeft,
+                    out _aggroRight);
+
+
+            _kickButton =
+                null;
+
+
+            _debuffIndicators =
+                CreateStatusIndicators(
+                    true);
+
+
+            _buffIndicators =
+                CreateStatusIndicators(
+                    false);
+
+
+            ConfigureInteraction();
+
+
             Refresh();
+        }
+
+
+        // ============================================================
+        // CONSTRUCTOR - NORMAL GROUP MEMBER
+        // ============================================================
+
+        internal RaidMemberFrame(
+            RectTransform parent,
+            SimPlayerTracking groupMember,
+            int groupSlotIndex)
+        {
+            _slot =
+                null;
+
+
+            _groupMember =
+                groupMember;
+
+
+            _player =
+                false;
+
+
+            _partyContext =
+                true;
+
+
+            _groupSlotIndex =
+                groupSlotIndex;
+
+
+            _root =
+                CreateRoot(
+                    parent);
+
+
+            _rootRect =
+                _root.GetComponent<RectTransform>();
+
+
+            _background =
+                CreateBackground();
+
+
+            _healthFill =
+                CreateHealthFill();
+
+
+            _manaBackground =
+                CreateManaBackground();
+
+
+            _manaFill =
+                CreateManaFill();
+
+
+            _nameText =
+                CreateNameText();
+
+
+            _hpPercentText =
+                CreateHpPercentText();
+
+
+            _rawHealthText =
+                CreateRawHealthText();
+
+
+            _targetHighlight =
+                CreateTargetHighlight(
+                    out _targetTop,
+                    out _targetBottom,
+                    out _targetLeft,
+                    out _targetRight);
+
+
+            _aggroHighlight =
+                CreateAggroHighlight(
+                    out _aggroTop,
+                    out _aggroBottom,
+                    out _aggroLeft,
+                    out _aggroRight);
+
+
+            _kickButton =
+                CreatePartyKickButton();
+
+
+            _debuffIndicators =
+                CreateStatusIndicators(
+                    true);
+
+
+            _buffIndicators =
+                CreateStatusIndicators(
+                    false);
+
+
+            ConfigureInteraction();
+
+
+            Refresh();
+        }
+
+
+        // ============================================================
+        // PARTY KICK BUTTON
+        // ============================================================
+
+        private Button CreatePartyKickButton()
+        {
+            if (!_partyContext ||
+                _player ||
+                _groupMember == null ||
+                _groupSlotIndex < 0 ||
+                _groupSlotIndex > 3)
+            {
+                return null;
+            }
+
+            GameObject obj =
+                new GameObject(
+                    "KickButton");
+
+
+            obj.transform.SetParent(
+                _root.transform,
+                false);
+
+
+            RectTransform rect =
+                obj.AddComponent<RectTransform>();
+
+
+            rect.anchorMin =
+                new Vector2(
+                    0f,
+                    0.5f);
+
+
+            rect.anchorMax =
+                new Vector2(
+                    0f,
+                    0.5f);
+
+
+            rect.pivot =
+                new Vector2(
+                    1f,
+                    0.5f);
+
+
+            rect.anchoredPosition =
+                new Vector2(
+                    -3f,
+                    0f);
+
+
+            rect.sizeDelta =
+                new Vector2(
+                    17f,
+                    17f);
+
+
+            Image image =
+                obj.AddComponent<Image>();
+
+
+            image.color =
+                new Color(
+                    0.34f,
+                    0.08f,
+                    0.08f,
+                    0.96f);
+
+
+            Button button =
+                obj.AddComponent<Button>();
+
+
+            ColorBlock colors =
+                button.colors;
+
+
+            colors.normalColor =
+                Color.white;
+
+
+            colors.highlightedColor =
+                new Color(
+                    1f,
+                    0.78f,
+                    0.78f,
+                    1f);
+
+
+            colors.pressedColor =
+                new Color(
+                    0.72f,
+                    0.58f,
+                    0.58f,
+                    1f);
+
+
+            button.colors =
+                colors;
+
+
+            GameObject textObject =
+                new GameObject(
+                    "Text");
+
+
+            textObject.transform.SetParent(
+                obj.transform,
+                false);
+
+
+            RectTransform textRect =
+                textObject.AddComponent<RectTransform>();
+
+
+            textRect.anchorMin =
+                Vector2.zero;
+
+
+            textRect.anchorMax =
+                Vector2.one;
+
+
+            textRect.offsetMin =
+                Vector2.zero;
+
+
+            textRect.offsetMax =
+                Vector2.zero;
+
+
+            Text text =
+                textObject.AddComponent<Text>();
+
+
+            text.font =
+                Resources.GetBuiltinResource<Font>(
+                    "Arial.ttf");
+
+
+            text.fontSize =
+                12;
+
+
+            text.fontStyle =
+                FontStyle.Bold;
+
+
+            text.alignment =
+                TextAnchor.MiddleCenter;
+
+
+            text.color =
+                Color.white;
+
+
+            text.raycastTarget =
+                false;
+
+
+            text.text =
+                "X";
+
+
+            AddOutline(
+                textObject);
+
+
+            button.onClick.AddListener(
+                DismissPartyMember);
+
+
+            return button;
+        }
+
+
+        private void DismissPartyMember()
+        {
+            if (!_partyContext ||
+                _player ||
+                _groupMember == null ||
+                GameData.SimPlayerGrouping == null)
+            {
+                return;
+            }
+
+            // Use Erenshor's native group-dismiss methods. These perform
+            // the full native cleanup for the corresponding GroupMembers
+            // slot rather than mutating GameData.GroupMembers ourselves.
+            switch (_groupSlotIndex)
+            {
+                case 0:
+                    GameData.SimPlayerGrouping.DismissMember1();
+                    break;
+
+                case 1:
+                    GameData.SimPlayerGrouping.DismissMember2();
+                    break;
+
+                case 2:
+                    GameData.SimPlayerGrouping.DismissMember3();
+                    break;
+
+                case 3:
+                    GameData.SimPlayerGrouping.DismissMember4();
+                    break;
+            }
+        }
+
+
+        // ============================================================
+        // STATUS ICONS
+        // ============================================================
+
+        private StatusIndicator[] CreateStatusIndicators(
+            bool debuff)
+        {
+            StatusIndicator[] indicators =
+                new StatusIndicator[2];
+
+
+            for (int i = 0;
+                 i < indicators.Length;
+                 i++)
+            {
+                indicators[i] =
+                    CreateStatusIndicator(
+                        debuff,
+                        i);
+            }
+
+
+            return indicators;
+        }
+
+
+        private StatusIndicator CreateStatusIndicator(
+            bool debuff,
+            int index)
+        {
+            const float size = 14f;
+            const float spacing = 2f;
+
+
+            GameObject root =
+                new GameObject(
+                    debuff
+                        ? "DebuffIcon"
+                        : "BuffIcon");
+
+
+            root.transform.SetParent(
+                _root.transform,
+                false);
+
+
+            RectTransform rect =
+                root.AddComponent<RectTransform>();
+
+
+            rect.anchorMin =
+                new Vector2(
+                    1f,
+                    1f);
+
+
+            rect.anchorMax =
+                new Vector2(
+                    1f,
+                    1f);
+
+
+            rect.pivot =
+                new Vector2(
+                    1f,
+                    1f);
+
+
+            float groupOffset =
+                debuff
+                    ? 3f
+                    : 3f + (2f * (size + spacing));
+
+
+            rect.anchoredPosition =
+                new Vector2(
+                    -(groupOffset + index * (size + spacing)),
+                    -3f);
+
+
+            rect.sizeDelta =
+                new Vector2(
+                    size,
+                    size);
+
+
+            Image border =
+                root.AddComponent<Image>();
+
+
+            border.color =
+                debuff
+                    ? new Color(0.62f, 0.12f, 0.10f, 0.98f)
+                    : new Color(0.12f, 0.48f, 0.22f, 0.98f);
+
+
+            border.raycastTarget =
+                false;
+
+
+            GameObject iconObject =
+                new GameObject(
+                    "Icon");
+
+
+            iconObject.transform.SetParent(
+                root.transform,
+                false);
+
+
+            RectTransform iconRect =
+                iconObject.AddComponent<RectTransform>();
+
+
+            iconRect.anchorMin =
+                Vector2.zero;
+
+
+            iconRect.anchorMax =
+                Vector2.one;
+
+
+            iconRect.offsetMin =
+                new Vector2(
+                    1f,
+                    1f);
+
+
+            iconRect.offsetMax =
+                new Vector2(
+                    -1f,
+                    -1f);
+
+
+            Image icon =
+                iconObject.AddComponent<Image>();
+
+
+            icon.color =
+                new Color(
+                    0.18f,
+                    0.18f,
+                    0.18f,
+                    1f);
+
+
+            icon.preserveAspect =
+                true;
+
+
+            icon.raycastTarget =
+                false;
+
+
+            GameObject fallbackObject =
+                new GameObject(
+                    "Fallback");
+
+
+            fallbackObject.transform.SetParent(
+                root.transform,
+                false);
+
+
+            RectTransform fallbackRect =
+                fallbackObject.AddComponent<RectTransform>();
+
+
+            fallbackRect.anchorMin =
+                Vector2.zero;
+
+
+            fallbackRect.anchorMax =
+                Vector2.one;
+
+
+            fallbackRect.offsetMin =
+                Vector2.zero;
+
+
+            fallbackRect.offsetMax =
+                Vector2.zero;
+
+
+            Text fallback =
+                fallbackObject.AddComponent<Text>();
+
+
+            fallback.font =
+                Resources.GetBuiltinResource<Font>(
+                    "Arial.ttf");
+
+
+            fallback.fontSize =
+                8;
+
+
+            fallback.fontStyle =
+                FontStyle.Bold;
+
+
+            fallback.alignment =
+                TextAnchor.MiddleCenter;
+
+
+            fallback.color =
+                Color.white;
+
+
+            fallback.raycastTarget =
+                false;
+
+
+            AddOutline(
+                fallbackObject);
+
+
+            GameObject durationObject =
+                new GameObject(
+                    "Duration");
+
+
+            durationObject.transform.SetParent(
+                root.transform,
+                false);
+
+
+            RectTransform durationRect =
+                durationObject.AddComponent<RectTransform>();
+
+
+            durationRect.anchorMin =
+                Vector2.zero;
+
+
+            durationRect.anchorMax =
+                Vector2.one;
+
+
+            durationRect.offsetMin =
+                new Vector2(
+                    -2f,
+                    -2f);
+
+
+            durationRect.offsetMax =
+                new Vector2(
+                    2f,
+                    2f);
+
+
+            Text duration =
+                durationObject.AddComponent<Text>();
+
+
+            duration.font =
+                Resources.GetBuiltinResource<Font>(
+                    "Arial.ttf");
+
+
+            duration.fontSize =
+                7;
+
+
+            duration.fontStyle =
+                FontStyle.Bold;
+
+
+            duration.alignment =
+                TextAnchor.LowerRight;
+
+
+            duration.color =
+                Color.white;
+
+
+            duration.raycastTarget =
+                false;
+
+
+            AddOutline(
+                durationObject);
+
+
+            root.SetActive(
+                false);
+
+
+            return new StatusIndicator(
+                root,
+                icon,
+                fallback,
+                duration,
+                debuff);
+        }
+
+
+        private void RefreshStatusIndicators(
+            Stats stats)
+        {
+            bool show =
+                GetShowStatusIcons();
+
+
+            if (!show ||
+                stats == null ||
+                stats.StatusEffects == null ||
+                stats.CurrentHP <= 0)
+            {
+                HideStatusIndicators(
+                    _debuffIndicators);
+
+
+                HideStatusIndicators(
+                    _buffIndicators);
+
+
+                return;
+            }
+
+
+            List<StatusEffect> debuffs =
+                new List<StatusEffect>();
+
+
+            List<StatusEffect> buffs =
+                new List<StatusEffect>();
+
+
+            Character player =
+                GameData.PlayerControl != null
+                    ? GameData.PlayerControl.Myself
+                    : null;
+
+
+            for (int i = 0;
+                 i < stats.StatusEffects.Length;
+                 i++)
+            {
+                StatusEffect status =
+                    stats.StatusEffects[i];
+
+
+                if (status == null ||
+                    status.Effect == null ||
+                    status.Duration <= 0f)
+                {
+                    continue;
+                }
+
+
+                Spell effect =
+                    status.Effect;
+
+
+                bool beneficial =
+                    effect.Type == Spell.SpellType.Beneficial ||
+                    effect.TargetHealing > 0 ||
+                    effect.ShieldingAmt > 0;
+
+
+                bool castByPlayer =
+                    status.CastedByPC ||
+                    (player != null && status.Owner == player);
+
+
+                if (beneficial)
+                {
+                    // Whitelist only persistent effects that belong to an
+                    // actual Heal spell. This intentionally excludes auras,
+                    // shields, stat buffs, item effects, and other beneficial
+                    // StatusEffects even when the player is their owner.
+                    //
+                    // In practice these are the HoT carrier effects referenced
+                    // by native Heal spells through StatusEffectToApply.
+                    if (castByPlayer &&
+                        IsHealingStatusEffect(
+                            effect))
+                    {
+                        buffs.Add(
+                            status);
+                    }
+                }
+                else
+                {
+                    // Debuffs are useful regardless of who applied them.
+                    debuffs.Add(
+                        status);
+                }
+            }
+
+
+            debuffs.Sort(
+                CompareStatusDuration);
+
+
+            buffs.Sort(
+                CompareStatusDuration);
+
+
+            ApplyStatusIndicators(
+                _debuffIndicators,
+                debuffs);
+
+
+            ApplyStatusIndicators(
+                _buffIndicators,
+                buffs);
+        }
+
+
+        private static bool IsHealingStatusEffect(
+            Spell effect)
+        {
+            if (effect == null ||
+                effect.TargetHealing <= 0 ||
+                GameData.SpellDatabase == null ||
+                GameData.SpellDatabase.SpellDatabase == null)
+            {
+                return false;
+            }
+
+
+            foreach (Spell healSpell
+                     in GameData.SpellDatabase.SpellDatabase)
+            {
+                if (!HealingSpellCatalog.IsHealingSpell(
+                        healSpell))
+                {
+                    continue;
+                }
+
+
+                // Most Erenshor HoTs are Heal spells whose persistent
+                // healing is carried by StatusEffectToApply. Keep the
+                // direct equality fallback for any native/modded Heal spell
+                // that is itself used as the StatusEffect.
+                if (healSpell == effect ||
+                    healSpell.StatusEffectToApply == effect)
+                {
+                    return true;
+                }
+            }
+
+
+            return false;
+        }
+
+
+        private static int CompareStatusDuration(
+            StatusEffect left,
+            StatusEffect right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return 0;
+            }
+
+
+            if (left == null)
+            {
+                return 1;
+            }
+
+
+            if (right == null)
+            {
+                return -1;
+            }
+
+
+            return left.Duration.CompareTo(
+                right.Duration);
+        }
+
+
+        private static void ApplyStatusIndicators(
+            StatusIndicator[] indicators,
+            List<StatusEffect> statuses)
+        {
+            if (indicators == null)
+            {
+                return;
+            }
+
+
+            for (int i = 0;
+                 i < indicators.Length;
+                 i++)
+            {
+                StatusIndicator indicator =
+                    indicators[i];
+
+
+                if (indicator == null)
+                {
+                    continue;
+                }
+
+
+                if (statuses == null ||
+                    i >= statuses.Count)
+                {
+                    indicator.Root.SetActive(
+                        false);
+
+
+                    continue;
+                }
+
+
+                StatusEffect status =
+                    statuses[i];
+
+
+                Spell effect =
+                    status != null
+                        ? status.Effect
+                        : null;
+
+
+                if (effect == null)
+                {
+                    indicator.Root.SetActive(
+                        false);
+
+
+                    continue;
+                }
+
+
+                Sprite sprite =
+                    ResolveSpellSprite(
+                        effect);
+
+
+                indicator.Icon.sprite =
+                    sprite;
+
+
+                indicator.Icon.color =
+                    sprite != null
+                        ? Color.white
+                        : (indicator.Debuff
+                            ? new Color(0.34f, 0.08f, 0.08f, 1f)
+                            : new Color(0.06f, 0.22f, 0.10f, 1f));
+
+
+                indicator.Fallback.gameObject.SetActive(
+                    sprite == null);
+
+
+                indicator.Fallback.text =
+                    GetStatusFallbackText(
+                        effect,
+                        indicator.Debuff);
+
+
+                int seconds =
+                    Mathf.CeilToInt(
+                        status.Duration);
+
+
+                indicator.Duration.text =
+                    seconds > 99
+                        ? "99+"
+                        : seconds.ToString();
+
+
+                indicator.Root.SetActive(
+                    true);
+            }
+        }
+
+
+        private static string GetStatusFallbackText(
+            Spell effect,
+            bool debuff)
+        {
+            if (effect != null &&
+                !string.IsNullOrEmpty(effect.SpellName))
+            {
+                string name =
+                    effect.SpellName.Trim();
+
+
+                if (name.Length > 0)
+                {
+                    return name.Substring(
+                        0,
+                        1).ToUpperInvariant();
+                }
+            }
+
+
+            return debuff
+                ? "D"
+                : "B";
+        }
+
+
+        private static void HideStatusIndicators(
+            StatusIndicator[] indicators)
+        {
+            if (indicators == null)
+            {
+                return;
+            }
+
+
+            for (int i = 0;
+                 i < indicators.Length;
+                 i++)
+            {
+                if (indicators[i] != null &&
+                    indicators[i].Root != null)
+                {
+                    indicators[i].Root.SetActive(
+                        false);
+                }
+            }
+        }
+
+
+        private static Sprite ResolveSpellSprite(
+            Spell spell)
+        {
+            if (spell == null)
+            {
+                return null;
+            }
+
+
+            if (!_spellSpriteFieldResolved)
+            {
+                _spellSpriteFieldResolved =
+                    true;
+
+
+                FieldInfo[] fields =
+                    typeof(Spell).GetFields(
+                        BindingFlags.Instance |
+                        BindingFlags.Public |
+                        BindingFlags.NonPublic);
+
+
+                string[] preferredNames =
+                {
+                    "Icon",
+                    "SpellIcon",
+                    "IconSprite",
+                    "SpellSprite",
+                    "MyIcon"
+                };
+
+
+                for (int p = 0;
+                     p < preferredNames.Length && _spellSpriteField == null;
+                     p++)
+                {
+                    for (int i = 0;
+                         i < fields.Length;
+                         i++)
+                    {
+                        if (fields[i].FieldType == typeof(Sprite) &&
+                            string.Equals(
+                                fields[i].Name,
+                                preferredNames[p],
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            _spellSpriteField =
+                                fields[i];
+
+
+                            break;
+                        }
+                    }
+                }
+
+
+                if (_spellSpriteField == null)
+                {
+                    for (int i = 0;
+                         i < fields.Length;
+                         i++)
+                    {
+                        if (fields[i].FieldType == typeof(Sprite))
+                        {
+                            _spellSpriteField =
+                                fields[i];
+
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            if (_spellSpriteField == null)
+            {
+                return null;
+            }
+
+
+            try
+            {
+                return _spellSpriteField.GetValue(
+                    spell) as Sprite;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        private sealed class StatusIndicator
+        {
+            internal readonly GameObject Root;
+            internal readonly Image Icon;
+            internal readonly Text Fallback;
+            internal readonly Text Duration;
+            internal readonly bool Debuff;
+
+
+            internal StatusIndicator(
+                GameObject root,
+                Image icon,
+                Text fallback,
+                Text duration,
+                bool debuff)
+            {
+                Root = root;
+                Icon = icon;
+                Fallback = fallback;
+                Duration = duration;
+                Debuff = debuff;
+            }
+        }
+
+
+        private void ConfigureRaidDrag()
+        {
+            if (_partyContext ||
+                _player ||
+                _slot == null)
+            {
+                return;
+            }
+
+
+            RaidMemberDragHandler drag =
+                _root.AddComponent<RaidMemberDragHandler>();
+
+
+            drag.Initialize(
+                _slot);
+        }
+
+
+        // ============================================================
+        // INTERACTION
+        // ============================================================
+
+        private void ConfigureInteraction()
+        {
+            UnitFrameInteraction interaction =
+                _root.AddComponent<UnitFrameInteraction>();
+
+
+            if (_player)
+            {
+                interaction.InitializeForPlayer(
+                    _partyContext);
+            }
+            else if (_groupMember != null)
+            {
+                interaction.InitializeForGroupMember(
+                    _groupMember,
+                    true);
+            }
+            else
+            {
+                interaction.InitializeForRaidMember(
+                    _slot,
+                    false);
+            }
         }
 
 
@@ -140,8 +1398,10 @@ namespace ArcanesGroupFrames
             GameObject root =
                 new GameObject(
                     _player
-                        ? "RaidMember_Player"
-                        : "RaidMember");
+                        ? "UnitFrame_Player"
+                        : (_groupMember != null
+                            ? "GroupMember"
+                            : "RaidMember"));
 
 
             root.transform
@@ -156,8 +1416,8 @@ namespace ArcanesGroupFrames
 
             rect.sizeDelta =
                 new Vector2(
-                    RaidFramesSettings.FrameWidth,
-                    RaidFramesSettings.FrameHeight);
+                    GetFrameWidth(),
+                    GetFrameHeight());
 
 
             LayoutElement layout =
@@ -165,19 +1425,19 @@ namespace ArcanesGroupFrames
 
 
             layout.preferredWidth =
-                RaidFramesSettings.FrameWidth;
+                GetFrameWidth();
 
 
             layout.minWidth =
-                RaidFramesSettings.FrameWidth;
+                GetFrameWidth();
 
 
             layout.preferredHeight =
-                RaidFramesSettings.FrameHeight;
+                GetFrameHeight();
 
 
             layout.minHeight =
-                RaidFramesSettings.FrameHeight;
+                GetFrameHeight();
 
 
             layout.flexibleWidth =
@@ -324,6 +1584,523 @@ namespace ArcanesGroupFrames
 
 
             return image;
+        }
+
+
+        // ============================================================
+        // MANA / RESOURCE BAR
+        // ============================================================
+
+        private Image CreateManaBackground()
+        {
+            GameObject obj =
+                new GameObject(
+                    "ManaBackground");
+
+
+            obj.transform.SetParent(
+                _root.transform,
+                false);
+
+
+            RectTransform rect =
+                obj.AddComponent<RectTransform>();
+
+
+            rect.anchorMin =
+                new Vector2(
+                    0f,
+                    0f);
+
+
+            rect.anchorMax =
+                new Vector2(
+                    1f,
+                    0f);
+
+
+            rect.pivot =
+                new Vector2(
+                    0.5f,
+                    0f);
+
+
+            rect.offsetMin =
+                new Vector2(
+                    2f,
+                    2f);
+
+
+            rect.offsetMax =
+                new Vector2(
+                    -2f,
+                    7f);
+
+
+            Image image =
+                obj.AddComponent<Image>();
+
+
+            image.color =
+                new Color(
+                    0.035f,
+                    0.04f,
+                    0.055f,
+                    1f);
+
+
+            image.raycastTarget =
+                false;
+
+
+            return image;
+        }
+
+
+        private Image CreateManaFill()
+        {
+            GameObject obj =
+                new GameObject(
+                    "ManaFill");
+
+
+            obj.transform.SetParent(
+                _root.transform,
+                false);
+
+
+            RectTransform rect =
+                obj.AddComponent<RectTransform>();
+
+
+            rect.anchorMin =
+                new Vector2(
+                    0f,
+                    0f);
+
+
+            rect.anchorMax =
+                new Vector2(
+                    1f,
+                    0f);
+
+
+            rect.pivot =
+                new Vector2(
+                    0f,
+                    0f);
+
+
+            rect.offsetMin =
+                new Vector2(
+                    2f,
+                    2f);
+
+
+            rect.offsetMax =
+                new Vector2(
+                    -2f,
+                    7f);
+
+
+            Image image =
+                obj.AddComponent<Image>();
+
+
+            image.color =
+                new Color(
+                    0.18f,
+                    0.42f,
+                    0.85f,
+                    1f);
+
+
+            image.raycastTarget =
+                false;
+
+
+            return image;
+        }
+
+
+        // ============================================================
+        // AGGRO HIGHLIGHT
+        // ============================================================
+
+        private GameObject CreateAggroHighlight(
+            out Image top,
+            out Image bottom,
+            out Image left,
+            out Image right)
+        {
+            GameObject root =
+                new GameObject(
+                    "AggroHighlight");
+
+
+            root.transform.SetParent(
+                _root.transform,
+                false);
+
+
+            RectTransform rect =
+                root.AddComponent<RectTransform>();
+
+
+            rect.anchorMin =
+                Vector2.zero;
+
+
+            rect.anchorMax =
+                Vector2.one;
+
+
+            rect.offsetMin =
+                Vector2.zero;
+
+
+            rect.offsetMax =
+                Vector2.zero;
+
+
+            top = CreateHighlightEdge(root.transform, "Top", new Color(1f, 0.30f, 0.08f, 1f));
+            bottom = CreateHighlightEdge(root.transform, "Bottom", new Color(1f, 0.30f, 0.08f, 1f));
+            left = CreateHighlightEdge(root.transform, "Left", new Color(1f, 0.30f, 0.08f, 1f));
+            right = CreateHighlightEdge(root.transform, "Right", new Color(1f, 0.30f, 0.08f, 1f));
+
+
+            root.SetActive(false);
+
+
+            return root;
+        }
+
+
+        private void RefreshAggroHighlight()
+        {
+            if (_aggroHighlight == null)
+            {
+                return;
+            }
+
+
+            // Current-target highlighting has visual priority over aggro.
+            bool show =
+                GetShowAggroHighlight() &&
+                !IsCurrentTarget() &&
+                HasEnemyAggro();
+
+
+            _aggroHighlight.SetActive(show);
+
+
+            if (!show)
+            {
+                return;
+            }
+
+
+            float thickness =
+                GetAggroHighlightThickness();
+
+
+            SetTargetEdgeLayout(
+                _aggroTop.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(0f, -thickness),
+                Vector2.zero);
+
+
+            SetTargetEdgeLayout(
+                _aggroBottom.rectTransform,
+                new Vector2(0f, 0f),
+                new Vector2(1f, 0f),
+                Vector2.zero,
+                new Vector2(0f, thickness));
+
+
+            SetTargetEdgeLayout(
+                _aggroLeft.rectTransform,
+                new Vector2(0f, 0f),
+                new Vector2(0f, 1f),
+                Vector2.zero,
+                new Vector2(thickness, 0f));
+
+
+            SetTargetEdgeLayout(
+                _aggroRight.rectTransform,
+                new Vector2(1f, 0f),
+                new Vector2(1f, 1f),
+                new Vector2(-thickness, 0f),
+                Vector2.zero);
+        }
+
+
+        private bool HasEnemyAggro()
+        {
+            Stats stats =
+                GetStats();
+
+
+            Character unit =
+                stats != null
+                    ? stats.Myself
+                    : null;
+
+
+            if (unit == null ||
+                !unit.Alive ||
+                unit.NearbyEnemies == null)
+            {
+                return false;
+            }
+
+
+            foreach (Character enemy in unit.NearbyEnemies)
+            {
+                if (enemy == null ||
+                    !enemy.Alive ||
+                    enemy.MyNPC == null)
+                {
+                    continue;
+                }
+
+
+                // Erenshor itself treats NPC.CurrentAggroTarget as the
+                // authoritative target-of-aggro signal.
+                if (enemy.MyNPC.CurrentAggroTarget == unit)
+                {
+                    return true;
+                }
+            }
+
+
+            return false;
+        }
+
+
+        // ============================================================
+        // CURRENT TARGET HIGHLIGHT
+        // ============================================================
+
+        private GameObject CreateTargetHighlight(
+            out Image top,
+            out Image bottom,
+            out Image left,
+            out Image right)
+        {
+            GameObject root =
+                new GameObject(
+                    "TargetHighlight");
+
+
+            root.transform.SetParent(
+                _root.transform,
+                false);
+
+
+            RectTransform rect =
+                root.AddComponent<RectTransform>();
+
+
+            rect.anchorMin =
+                Vector2.zero;
+
+
+            rect.anchorMax =
+                Vector2.one;
+
+
+            rect.offsetMin =
+                Vector2.zero;
+
+
+            rect.offsetMax =
+                Vector2.zero;
+
+
+            top =
+                CreateTargetEdge(
+                    root.transform,
+                    "Top");
+
+
+            bottom =
+                CreateTargetEdge(
+                    root.transform,
+                    "Bottom");
+
+
+            left =
+                CreateTargetEdge(
+                    root.transform,
+                    "Left");
+
+
+            right =
+                CreateTargetEdge(
+                    root.transform,
+                    "Right");
+
+
+            root.SetActive(
+                false);
+
+
+            return root;
+        }
+
+
+        private static Image CreateTargetEdge(
+            Transform parent,
+            string name)
+        {
+            return CreateHighlightEdge(
+                parent,
+                name,
+                new Color(
+                    1f,
+                    0.86f,
+                    0.28f,
+                    1f));
+        }
+
+
+        private static Image CreateHighlightEdge(
+            Transform parent,
+            string name,
+            Color color)
+        {
+            GameObject obj =
+                new GameObject(
+                    name);
+
+
+            obj.transform.SetParent(
+                parent,
+                false);
+
+
+            obj.AddComponent<RectTransform>();
+
+
+            Image image =
+                obj.AddComponent<Image>();
+
+
+            image.color =
+                color;
+
+
+            image.raycastTarget =
+                false;
+
+
+            return image;
+        }
+
+
+        private void RefreshTargetHighlight()
+        {
+            if (_targetHighlight == null)
+            {
+                return;
+            }
+
+
+            bool show =
+                GetShowTargetHighlight() &&
+                IsCurrentTarget();
+
+
+            _targetHighlight.SetActive(
+                show);
+
+
+            if (!show)
+            {
+                return;
+            }
+
+
+            float thickness =
+                GetTargetHighlightThickness();
+
+
+            SetTargetEdgeLayout(
+                _targetTop.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(0f, -thickness),
+                Vector2.zero);
+
+
+            SetTargetEdgeLayout(
+                _targetBottom.rectTransform,
+                new Vector2(0f, 0f),
+                new Vector2(1f, 0f),
+                Vector2.zero,
+                new Vector2(0f, thickness));
+
+
+            SetTargetEdgeLayout(
+                _targetLeft.rectTransform,
+                new Vector2(0f, 0f),
+                new Vector2(0f, 1f),
+                Vector2.zero,
+                new Vector2(thickness, 0f));
+
+
+            SetTargetEdgeLayout(
+                _targetRight.rectTransform,
+                new Vector2(1f, 0f),
+                new Vector2(1f, 1f),
+                new Vector2(-thickness, 0f),
+                Vector2.zero);
+        }
+
+
+        private static void SetTargetEdgeLayout(
+            RectTransform rect,
+            Vector2 anchorMin,
+            Vector2 anchorMax,
+            Vector2 offsetMin,
+            Vector2 offsetMax)
+        {
+            rect.anchorMin =
+                anchorMin;
+
+
+            rect.anchorMax =
+                anchorMax;
+
+
+            rect.offsetMin =
+                offsetMin;
+
+
+            rect.offsetMax =
+                offsetMax;
+        }
+
+
+        private bool IsCurrentTarget()
+        {
+            if (GameData.PlayerControl == null ||
+                GameData.PlayerControl.CurrentTarget == null)
+            {
+                return false;
+            }
+
+
+            Stats stats =
+                GetStats();
+
+
+            return stats != null &&
+                   stats.Myself != null &&
+                   GameData.PlayerControl.CurrentTarget == stats.Myself;
         }
 
 
@@ -568,9 +2345,30 @@ namespace ArcanesGroupFrames
                 GetName();
 
 
+            ApplyAppearance();
+
+
+            ApplyResourceLayout();
+
+
+            RefreshStatusIndicators(
+                stats);
+
+
+            RefreshAggroHighlight();
+
+
+            RefreshTargetHighlight();
+
+
             if (stats == null)
             {
                 SetHealth(
+                    0,
+                    1);
+
+
+                SetMana(
                     0,
                     1);
 
@@ -582,6 +2380,11 @@ namespace ArcanesGroupFrames
             SetHealth(
                 stats.CurrentHP,
                 stats.CurrentMaxHP);
+
+
+            SetMana(
+                stats.CurrentMana,
+                stats.GetCurrentMaxMana());
         }
 
 
@@ -634,7 +2437,7 @@ namespace ArcanesGroupFrames
             // --------------------------------------------------------
 
             _hpPercentText.gameObject.SetActive(
-                RaidFramesSettings.ShowHpPercent);
+                GetShowHpPercent());
 
 
             _hpPercentText.text =
@@ -644,7 +2447,7 @@ namespace ArcanesGroupFrames
 
 
             _rawHealthText.gameObject.SetActive(
-                RaidFramesSettings.ShowRawHealth);
+                GetShowRawHealth());
 
 
             _rawHealthText.text =
@@ -691,14 +2494,186 @@ namespace ArcanesGroupFrames
 
 
         // ============================================================
+        // MANA / RESOURCE
+        // ============================================================
+
+        private void SetMana(
+            int current,
+            int maximum)
+        {
+            bool show =
+                GetShowManaBars();
+
+
+            _manaBackground.gameObject.SetActive(
+                show);
+
+
+            _manaFill.gameObject.SetActive(
+                show);
+
+
+            if (!show)
+            {
+                return;
+            }
+
+
+            if (maximum <= 0)
+            {
+                maximum =
+                    1;
+
+
+                current =
+                    0;
+            }
+
+
+            current =
+                Mathf.Clamp(
+                    current,
+                    0,
+                    maximum);
+
+
+            float percentage =
+                Mathf.Clamp01(
+                    (float)current /
+                    maximum);
+
+
+            RectTransform fillRect =
+                _manaFill.rectTransform;
+
+
+            fillRect.anchorMax =
+                new Vector2(
+                    percentage,
+                    0f);
+
+
+            fillRect.offsetMax =
+                new Vector2(
+                    -2f,
+                    7f);
+        }
+
+
+        private void ApplyResourceLayout()
+        {
+            bool showMana =
+                GetShowManaBars();
+
+
+            float contentBottom =
+                showMana
+                    ? 8f
+                    : 2f;
+
+
+            _healthFill.rectTransform.offsetMin =
+                new Vector2(
+                    2f,
+                    contentBottom);
+
+
+            _nameText.rectTransform.offsetMin =
+                new Vector2(
+                    5f,
+                    showMana ? 9f : 4f);
+
+
+            _nameText.rectTransform.offsetMax =
+                new Vector2(
+                    GetShowStatusIcons() ? -69f : -5f,
+                    -3f);
+
+
+            _hpPercentText.rectTransform.offsetMin =
+                new Vector2(
+                    0f,
+                    showMana ? 7f : 0f);
+
+
+            _rawHealthText.rectTransform.offsetMin =
+                new Vector2(
+                    5f,
+                    showMana ? 7f : 0f);
+        }
+
+
+        // ============================================================
+        // APPEARANCE
+        // ============================================================
+
+        private void ApplyAppearance()
+        {
+            _background.color =
+                UnitFrameAppearance.ParseColorOrDefault(
+                    GetMissingHealthColorHex(),
+                    new Color(
+                        0.07f,
+                        0.07f,
+                        0.075f,
+                        1f));
+
+
+            string texture =
+                GetBarTexture();
+
+
+            UnitFrameAppearance.ApplyBarTexture(
+                _healthFill,
+                texture);
+
+
+            UnitFrameAppearance.ApplyBarTexture(
+                _manaFill,
+                texture);
+
+
+            Font font =
+                UnitFrameAppearance.ResolveFont(
+                    GetFontName());
+
+
+            _nameText.font =
+                font;
+
+
+            _hpPercentText.font =
+                font;
+
+
+            _rawHealthText.font =
+                font;
+
+
+            _nameText.fontSize =
+                GetNameFontSize();
+
+
+            _hpPercentText.fontSize =
+                GetHpPercentFontSize();
+
+
+            _rawHealthText.fontSize =
+                GetRawHpFontSize();
+        }
+
+
+        // ============================================================
         // CLASS COLOR
         // ============================================================
 
         private Color GetHealthColor()
         {
-            if (!RaidFramesSettings.UseClassColors)
+            if (!GetUseClassColors())
             {
-                return RaidClassColors.DefaultColor;
+                return UnitFrameAppearance.ParseColorOrDefault(
+                    GetStaticHealthColorHex(),
+                    RaidClassColors.DefaultColor);
             }
 
 
@@ -727,6 +2702,19 @@ namespace ArcanesGroupFrames
             if (_player)
             {
                 return GameData.PlayerStats;
+            }
+
+
+            if (_groupMember != null)
+            {
+                if (_groupMember.MyAvatar != null &&
+                    _groupMember.MyAvatar.MyStats != null)
+                {
+                    return _groupMember.MyAvatar.MyStats;
+                }
+
+
+                return _groupMember.MyStats;
             }
 
 
@@ -773,6 +2761,27 @@ namespace ArcanesGroupFrames
 
 
                 return "Player";
+            }
+
+
+            if (_groupMember != null)
+            {
+                if (!string.IsNullOrWhiteSpace(
+                        _groupMember.SimName))
+                {
+                    return _groupMember.SimName;
+                }
+
+
+                if (_groupMember.MyStats != null &&
+                    !string.IsNullOrWhiteSpace(
+                        _groupMember.MyStats.MyName))
+                {
+                    return _groupMember.MyStats.MyName;
+                }
+
+
+                return "Unknown";
             }
 
 
@@ -835,6 +2844,150 @@ namespace ArcanesGroupFrames
 
 
         // ============================================================
+        // SETTINGS CONTEXT
+        // ============================================================
+
+        private float GetFrameWidth()
+        {
+            return _partyContext
+                ? PartyFramesSettings.FrameWidth
+                : RaidFramesSettings.FrameWidth;
+        }
+
+        private float GetFrameHeight()
+        {
+            return _partyContext
+                ? PartyFramesSettings.FrameHeight
+                : RaidFramesSettings.FrameHeight;
+        }
+
+        private bool GetShowHpPercent()
+        {
+            return _partyContext
+                ? PartyFramesSettings.ShowHpPercent
+                : RaidFramesSettings.ShowHpPercent;
+        }
+
+        private bool GetShowRawHealth()
+        {
+            return _partyContext
+                ? PartyFramesSettings.ShowRawHealth
+                : RaidFramesSettings.ShowRawHealth;
+        }
+
+        private bool GetUseClassColors()
+        {
+            return _partyContext
+                ? PartyFramesSettings.UseClassColors
+                : RaidFramesSettings.UseClassColors;
+        }
+
+
+        private string GetBarTexture()
+        {
+            return _partyContext
+                ? PartyFramesSettings.BarTexture
+                : RaidFramesSettings.BarTexture;
+        }
+
+
+        private string GetStaticHealthColorHex()
+        {
+            return _partyContext
+                ? PartyFramesSettings.StaticHealthColorHex
+                : RaidFramesSettings.StaticHealthColorHex;
+        }
+
+
+        private string GetMissingHealthColorHex()
+        {
+            return _partyContext
+                ? PartyFramesSettings.MissingHealthColorHex
+                : RaidFramesSettings.MissingHealthColorHex;
+        }
+
+
+        private string GetFontName()
+        {
+            return _partyContext
+                ? PartyFramesSettings.FontName
+                : RaidFramesSettings.FontName;
+        }
+
+
+        private int GetNameFontSize()
+        {
+            return _partyContext
+                ? PartyFramesSettings.NameFontSize
+                : RaidFramesSettings.NameFontSize;
+        }
+
+
+        private int GetHpPercentFontSize()
+        {
+            return _partyContext
+                ? PartyFramesSettings.HpPercentFontSize
+                : RaidFramesSettings.HpPercentFontSize;
+        }
+
+
+        private int GetRawHpFontSize()
+        {
+            return _partyContext
+                ? PartyFramesSettings.RawHpFontSize
+                : RaidFramesSettings.RawHpFontSize;
+        }
+
+
+        private bool GetShowStatusIcons()
+        {
+            return _partyContext
+                ? PartyFramesSettings.ShowStatusIcons
+                : RaidFramesSettings.ShowStatusIcons;
+        }
+
+
+        private bool GetShowManaBars()
+        {
+            return _partyContext
+                ? PartyFramesSettings.ShowManaBars
+                : RaidFramesSettings.ShowManaBars;
+        }
+
+
+        private bool GetShowTargetHighlight()
+        {
+            return _partyContext
+                ? PartyFramesSettings.ShowTargetHighlight
+                : RaidFramesSettings.ShowTargetHighlight;
+        }
+
+
+        private float GetTargetHighlightThickness()
+        {
+            return _partyContext
+                ? PartyFramesSettings.TargetHighlightThickness
+                : RaidFramesSettings.TargetHighlightThickness;
+        }
+
+
+        private bool GetShowAggroHighlight()
+        {
+            return _partyContext
+                ? PartyFramesSettings.ShowAggroHighlight
+                : RaidFramesSettings.ShowAggroHighlight;
+        }
+
+
+        private float GetAggroHighlightThickness()
+        {
+            return _partyContext
+                ? PartyFramesSettings.AggroHighlightThickness
+                : RaidFramesSettings.AggroHighlightThickness;
+        }
+
+
+        // ============================================================
         // DESTROY
         // ============================================================
 
@@ -842,7 +2995,7 @@ namespace ArcanesGroupFrames
         {
             if (_root != null)
             {
-                Object.Destroy(
+                UnityEngine.Object.Destroy(
                     _root);
             }
         }

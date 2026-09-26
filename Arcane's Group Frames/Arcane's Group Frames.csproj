@@ -35,6 +35,10 @@
       <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\BepInEx\core\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Lunaris">
       <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Lunaris.dll</HintPath>
       <Private>False</Private>
@@ -59,6 +63,10 @@
       <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>D:\SteamLibrary\steamapps\common\Erenshor\Erenshor_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
@@ -75,19 +83,30 @@
   <ItemGroup>
     <Compile Include="Core\Plugin.cs" />
     <Compile Include="Configuration\RaidFramesSettings.cs" />
+    <Compile Include="Configuration\PartyFramesSettings.cs" />
     <Compile Include="Native\NativeRaidControlProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Raid\RaidGroupCommands.cs" />
     <Compile Include="Styling\RaidClassColors.cs" />
+    <Compile Include="Styling\UnitFrameAppearance.cs" />
     <Compile Include="UI\ControlPanel\RaidControlPanel.cs" />
     <Compile Include="UI\ControlPanel\RaidControlPanelDragHandler.cs" />
-    <Compile Include="UI\Native\RaidManagerToggleButton.cs" />
-    <Compile Include="UI\Native\RaidManagerToggleDragHandler.cs" />
+    <Compile Include="UI\GroupFrames\NativeGroupFramesVisibility.cs" />
+    <Compile Include="UI\GroupFrames\PartyFramesDragHandler.cs" />
+    <Compile Include="UI\GroupFrames\PartyFramesUI.cs" />
+    <Compile Include="UI\GroupFrames\GroupOptionsButton.cs" />
+    <Compile Include="UI\ClickCasting\ClickCastingManager.cs" />
+    <Compile Include="UI\ClickCasting\HealingSpellCatalog.cs" />
     <Compile Include="UI\Native\RaidManagerVisibility.cs" />
     <Compile Include="UI\Options\RaidFramesOptionsUI.cs" />
+    <Compile Include="UI\Options\GroupFramesOptionsUI.cs" />
     <Compile Include="UI\RaidFrames\RaidFramesDragHandler.cs" />
+    <Compile Include="UI\RaidFrames\RaidMemberDragHandler.cs" />
     <Compile Include="UI\RaidFrames\RaidFramesUI.cs" />
     <Compile Include="UI\RaidFrames\RaidMemberFrame.cs" />
+    <Compile Include="UI\UnitFrames\UnitFrameInteraction.cs" />
+    <Compile Include="UI\UnitFrames\UnitFrameMouseoverState.cs" />
+    <Compile Include="UI\UnitFrames\UnitFrameMouseoverCastingPatch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

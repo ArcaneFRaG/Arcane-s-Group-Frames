@@ -1,4 +1,5 @@
-﻿using Lunaris;
+using HarmonyLib;
+using Lunaris;
 
 namespace ArcanesGroupFrames
 {
@@ -33,6 +34,9 @@ namespace ArcanesGroupFrames
         }
 
 
+        private Harmony _harmony;
+
+
         // ============================================================
         // STARTUP
         // ============================================================
@@ -50,15 +54,33 @@ namespace ArcanesGroupFrames
             RaidFramesSettings
                 .Load();
 
+            PartyFramesSettings
+                .Load();
+
 
             // --------------------------------------------------------
-            // EXISTING NATIVE-UI TOGGLE
+            // HARMONY PATCHES
             //
-            // Temporary while the custom replacement is still under
-            // construction.
+            // Used by the mouseover casting target override.
             // --------------------------------------------------------
 
-            RaidManagerToggleButton
+            _harmony =
+                new Harmony(
+                    "arcanes.groupframes");
+
+
+            _harmony.PatchAll(
+                typeof(Plugin).Assembly);
+
+
+            // --------------------------------------------------------
+            // NATIVE RAID UI VISIBILITY
+            //
+            // The native raid-member list is automatically hidden while
+            // a raid is active and restored when the raid ends.
+            // --------------------------------------------------------
+
+            RaidManagerVisibility
                 .Initialize();
 
 
@@ -78,6 +100,17 @@ namespace ArcanesGroupFrames
                 .Initialize();
 
 
+            // --------------------------------------------------------
+            // CUSTOM NORMAL PARTY FRAMES
+            // --------------------------------------------------------
+
+            PartyFramesUI
+                .Initialize();
+
+            GroupOptionsButton
+                .Initialize();
+
+
             Logging.LogInfo(
                 $"{PluginName} v{PluginVersion} initialized.");
         }
@@ -90,11 +123,11 @@ namespace ArcanesGroupFrames
         private void Update()
         {
             // --------------------------------------------------------
-            // TEMPORARY NATIVE RAID UI TOGGLE
+            // AUTOMATIC NATIVE RAID UI VISIBILITY
             // --------------------------------------------------------
 
-            RaidManagerToggleButton
-                .UpdateVisibility();
+            RaidManagerVisibility
+                .UpdateAutomatic();
 
 
             // --------------------------------------------------------
@@ -110,6 +143,17 @@ namespace ArcanesGroupFrames
             // --------------------------------------------------------
 
             RaidFramesUI
+                .Update();
+
+
+            // --------------------------------------------------------
+            // CUSTOM NORMAL PARTY FRAMES
+            // --------------------------------------------------------
+
+            PartyFramesUI
+                .Update();
+
+            GroupOptionsButton
                 .Update();
         }
 
@@ -129,10 +173,28 @@ namespace ArcanesGroupFrames
                 RaidFramesOptionsUI
                     .Shutdown();
 
+                GroupFramesOptionsUI
+                    .Shutdown();
+
 
                 // ----------------------------------------------------
                 // RAID FRAMES
                 // ----------------------------------------------------
+
+                UnitFrameMouseoverState
+                    .Reset();
+
+
+                GroupOptionsButton
+                    .Shutdown();
+
+                PartyFramesUI
+                    .Shutdown();
+
+
+                NativeGroupFramesVisibility
+                    .Reset();
+
 
                 RaidFramesUI
                     .Shutdown();
@@ -147,19 +209,22 @@ namespace ArcanesGroupFrames
 
 
                 // ----------------------------------------------------
-                // TEMPORARY TOGGLE BUTTON
-                // ----------------------------------------------------
-
-                RaidManagerToggleButton
-                    .Shutdown();
-
-
-                // ----------------------------------------------------
                 // RESTORE NATIVE RAID MANAGER
                 // ----------------------------------------------------
 
                 RaidManagerVisibility
                     .Reset();
+
+
+                // ----------------------------------------------------
+                // REMOVE OUR HARMONY PATCHES
+                // ----------------------------------------------------
+
+                if (_harmony != null)
+                {
+                    _harmony.UnpatchSelf();
+                    _harmony = null;
+                }
             }
             finally
             {

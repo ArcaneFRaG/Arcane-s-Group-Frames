@@ -2,18 +2,15 @@ using UnityEngine;
 
 namespace ArcanesGroupFrames
 {
-    internal static class RaidFramesSettings
+    internal static class PartyFramesSettings
     {
-        private const string Prefix = "ArcanesGroupFrames.";
+        private const string Prefix = "ArcanesGroupFrames.Party.";
 
         internal const float DefaultFrameWidth = 145f;
         internal const float DefaultFrameHeight = 38f;
         internal const float DefaultMemberSpacing = 2f;
-        internal const float DefaultGroupSpacing = 5f;
         internal const float DefaultPositionX = 8f;
-        internal const float DefaultPositionY = -320f;
-        internal const float DefaultPartyPositionX = 8f;
-        internal const float DefaultPartyPositionY = -220f;
+        internal const float DefaultPositionY = -220f;
 
         internal static bool Locked { get; private set; } = true;
         internal static bool ShowHpPercent { get; private set; } = true;
@@ -38,11 +35,8 @@ namespace ArcanesGroupFrames
         internal static float MemberSpacing { get; private set; } = DefaultMemberSpacing;
         internal static float TargetHighlightThickness { get; private set; } = 2f;
         internal static float AggroHighlightThickness { get; private set; } = 2f;
-        internal static float GroupSpacing { get; private set; } = DefaultGroupSpacing;
         internal static float PositionX { get; private set; } = DefaultPositionX;
         internal static float PositionY { get; private set; } = DefaultPositionY;
-        internal static float PartyPositionX { get; private set; } = DefaultPartyPositionX;
-        internal static float PartyPositionY { get; private set; } = DefaultPartyPositionY;
 
         internal static string ClickLeft { get; private set; } = ClickCastingManager.ActionTarget;
         internal static string ClickRight { get; private set; } = ClickCastingManager.ActionInspect;
@@ -78,11 +72,8 @@ namespace ArcanesGroupFrames
             MemberSpacing = PlayerPrefs.GetFloat(Prefix + "MemberSpacing", DefaultMemberSpacing);
             TargetHighlightThickness = PlayerPrefs.GetFloat(Prefix + "TargetHighlightThickness", 2f);
             AggroHighlightThickness = PlayerPrefs.GetFloat(Prefix + "AggroHighlightThickness", 2f);
-            GroupSpacing = PlayerPrefs.GetFloat(Prefix + "GroupSpacing", DefaultGroupSpacing);
             PositionX = PlayerPrefs.GetFloat(Prefix + "PositionX", DefaultPositionX);
             PositionY = PlayerPrefs.GetFloat(Prefix + "PositionY", DefaultPositionY);
-            PartyPositionX = PlayerPrefs.GetFloat(Prefix + "PartyPositionX", DefaultPartyPositionX);
-            PartyPositionY = PlayerPrefs.GetFloat(Prefix + "PartyPositionY", DefaultPartyPositionY);
 
             ClickLeft = PlayerPrefs.GetString(Prefix + "Click.Left", ClickCastingManager.ActionTarget);
             ClickRight = PlayerPrefs.GetString(Prefix + "Click.Right", ClickCastingManager.ActionInspect);
@@ -138,25 +129,15 @@ namespace ArcanesGroupFrames
         internal static void SetMemberSpacing(float value) { MemberSpacing = Mathf.Clamp(value, 0f, 10f); PlayerPrefs.SetFloat(Prefix + "MemberSpacing", MemberSpacing); Save(); }
         internal static void SetTargetHighlightThickness(float value) { TargetHighlightThickness = Mathf.Clamp(value, 1f, 6f); PlayerPrefs.SetFloat(Prefix + "TargetHighlightThickness", TargetHighlightThickness); Save(); }
         internal static void SetAggroHighlightThickness(float value) { AggroHighlightThickness = Mathf.Clamp(value, 1f, 6f); PlayerPrefs.SetFloat(Prefix + "AggroHighlightThickness", AggroHighlightThickness); Save(); }
-        internal static void SetGroupSpacing(float value) { GroupSpacing = Mathf.Clamp(value, 0f, 25f); PlayerPrefs.SetFloat(Prefix + "GroupSpacing", GroupSpacing); Save(); }
 
         internal static Vector2 GetPosition() { return new Vector2(PositionX, PositionY); }
+
         internal static void SetPosition(Vector2 position)
         {
             PositionX = position.x;
             PositionY = position.y;
             PlayerPrefs.SetFloat(Prefix + "PositionX", PositionX);
             PlayerPrefs.SetFloat(Prefix + "PositionY", PositionY);
-            Save();
-        }
-
-        internal static Vector2 GetPartyPosition() { return new Vector2(PartyPositionX, PartyPositionY); }
-        internal static void SetPartyPosition(Vector2 position)
-        {
-            PartyPositionX = position.x;
-            PartyPositionY = position.y;
-            PlayerPrefs.SetFloat(Prefix + "PartyPositionX", PartyPositionX);
-            PlayerPrefs.SetFloat(Prefix + "PartyPositionY", PartyPositionY);
             Save();
         }
 
@@ -216,11 +197,8 @@ namespace ArcanesGroupFrames
             MemberSpacing = DefaultMemberSpacing;
             TargetHighlightThickness = 2f;
             AggroHighlightThickness = 2f;
-            GroupSpacing = DefaultGroupSpacing;
             PositionX = DefaultPositionX;
             PositionY = DefaultPositionY;
-            PartyPositionX = DefaultPartyPositionX;
-            PartyPositionY = DefaultPartyPositionY;
 
             PlayerPrefs.SetInt(Prefix + "Locked", 1);
             PlayerPrefs.SetInt(Prefix + "ShowHpPercent", 1);
@@ -243,11 +221,8 @@ namespace ArcanesGroupFrames
             PlayerPrefs.SetFloat(Prefix + "MemberSpacing", MemberSpacing);
             PlayerPrefs.SetFloat(Prefix + "TargetHighlightThickness", TargetHighlightThickness);
             PlayerPrefs.SetFloat(Prefix + "AggroHighlightThickness", AggroHighlightThickness);
-            PlayerPrefs.SetFloat(Prefix + "GroupSpacing", GroupSpacing);
             PlayerPrefs.SetFloat(Prefix + "PositionX", PositionX);
             PlayerPrefs.SetFloat(Prefix + "PositionY", PositionY);
-            PlayerPrefs.SetFloat(Prefix + "PartyPositionX", PartyPositionX);
-            PlayerPrefs.SetFloat(Prefix + "PartyPositionY", PartyPositionY);
 
             ResetClickBindings();
             Save();
@@ -265,9 +240,11 @@ namespace ArcanesGroupFrames
             RawHpFontSize = Mathf.Clamp(RawHpFontSize, 8, 24);
             StaticHealthColorHex = UnitFrameAppearance.NormalizeColorHex(StaticHealthColorHex, "#2E8538");
             MissingHealthColorHex = UnitFrameAppearance.NormalizeColorHex(MissingHealthColorHex, "#121213");
-            GroupSpacing = Mathf.Clamp(GroupSpacing, 0f, 25f);
         }
 
-        private static void Save() { PlayerPrefs.Save(); }
+        private static void Save()
+        {
+            PlayerPrefs.Save();
+        }
     }
 }

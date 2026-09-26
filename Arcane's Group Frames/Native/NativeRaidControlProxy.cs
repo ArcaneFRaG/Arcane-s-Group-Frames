@@ -237,9 +237,7 @@ namespace ArcanesGroupFrames
                 button.onClick.Invoke();
 
 
-                Plugin.LogInfo(
-                    $"Invoked native raid control: {label}");
-            }
+}
             catch (System.Exception exception)
             {
                 Plugin.LogError(
